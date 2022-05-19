@@ -1,0 +1,11 @@
+ID   original IDs  SMILES 
+0   1693   C[C@@H](NS(=O)(=O)c1cn(C)c(C(=O)Nc2ccnc(Cl)c2F)c1Cl)C(F)(F)F
+1   2621   COc1cnc(O[C@@H]2C[C@H]3C(=O)N[C@]4(C(=O)NS(=O)(=O)C5CC5)C[C@H]4/C=C\[C@H](C)CCC[C@@H](C)[C@H](NC(=O)OC(C)(C)C)C(=O)N3C2)c2cccc(Cl)c12
+2   728   CC(C)Oc1nc(N)nc2c1ncn2[C@@H]1O[C@@H]2CO[P@@](=O)(OC3CCCC3)O[C@H]2[C@@]1(C)F
+3   5151   Cc1onc(-c2cccc(F)c2)c1C(=O)N1CCN(c2ccc(Cl)c(Cl)c2)CC1
+4   2672   COC(=O)N[C@H](C(=O)N1CCC[C@H]1c1ncc(-c2ccc(-c3ccc(-c4cnc([C@@H]5CS[C@@H]6CCCC(=O)N65)[nH]4)cc3)cc2)[nH]1)C(C)C
+5   3421   COC(=O)N[C@H](C(=O)N1C[C@@H](C)C[C@H]1c1nc2ccc(-c3ccc(-c4ccc5nc([C@@H]6C[C@H](C)CN6C(=O)[C@@H](NC(=O)OC)C(C)C)[nH]c5c4)cc3)cc2[nH]1)C(C)C
+6   761   Cc1cc(NC(=O)c2cc(S(=O)(=O)NC(C)(C)C)sc2C)ccc1F
+7   1244   CCOc1nc(NC(=O)C2(NC(=O)c3ccc4c(C5CCCC5)c(-c5ccc(F)cn5)n(C)c4c3)CCC2)ccc1/C=C/C(=O)O
+8   3850   O=C(O)/C(O)=C/C(=O)C1(Cc2ccc(Cl)cc2)CCCN(Cc2ccccc2)C1
+9   4163   Cc1ccc2nc(N3CCS(=O)(=O)c4ccccc4C3)nc(NCC3(N)COC3)c2c1
