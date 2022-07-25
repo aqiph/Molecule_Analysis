@@ -6,14 +6,6 @@ Created on Thu Apr 14 15:58:36 2022
 @author: guohan
 """
 
-import sys
-
-path_list = sys.path
-module_path = '/Users/guohan/Documents/Code/Tool/utils'
-if module_path not in sys.path:
-    sys.path.append(module_path)
-    print('Add module path')
-
 from molecular_description import get_fingerprint, cal_fingerprint_distance
 
 

@@ -6,14 +6,7 @@ Created on Thu Nov  4 13:33:55 2021
 @author: guohan
 """
 
-import sys, warnings
-
-path_list = sys.path
-module_path = '/Users/guohan/Documents/Code/Tool/utils'
-if module_path not in sys.path:
-    sys.path.append(module_path)
-    print('Add module path')
-
+import warnings
 import numpy as np
 import pandas as pd
 from sklearn.cluster import DBSCAN

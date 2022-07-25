@@ -10,18 +10,11 @@ Created on Mon Nov  8 17:00:16 2021
 
 """
 
-import os, sys
-
-path_list = sys.path
-module_path = '/Users/guohan/Documents/Code/Tool/utils'
-if module_path not in sys.path:
-    sys.path.append(module_path)
-    print('Add module path')
-
+import os
 import pandas as pd
 import argparse
-from clustering import fingerprint_clustering, scaffold_clustering
-from nearest_neighbor import fingerprint_nearest_neighbor
+from utils.clustering import fingerprint_clustering, scaffold_clustering
+from utils.nearest_neighbor import fingerprint_nearest_neighbor
 
 
 def cluster_analysis(args):
@@ -116,7 +109,7 @@ if __name__ == '__main__':
     
     args = get_parser()
     
-    # cluster_analysis(args)
+    cluster_analysis(args)
     nearest_neighbor_analysis(args)
     
     
