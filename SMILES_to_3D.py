@@ -10,32 +10,22 @@ Created on Wed Jun 16 10:47:06 2021
 """
 
 import os
-import sys
-
-path_list = sys.path
-module_path = '/Users/guohan/Documents/Code/Tool/utils'
-if module_path not in sys.path:
-    sys.path.append(module_path)
-    print('Add module path')
-
 import shutil
 import pandas as pd
-
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-
-from util import plot_2d_molecule_from_mol, cleanup_smiles
-
+from process_SMILES import plot_2d_molecule_from_mol, cleanup_smiles_by_CSP
 
 
-def process_multiple_smiles(input_file, smiles_col_name, id_col_name = None, cleanup = False, opt = True, plot2D = True):
+
+def process_multiple_smiles(input_file, smiles_col_name, id_col_name = None, cleanup_SMILES = False, opt = True, plot2D = True):
     """
     read smiles from excel, generate .xyz file of each smiles in the input_file
     :para input_file: str, name of input file
     :para smiles_col_name: str, the column name of the smiles
     :para id_col_name: str, the column name of the id
-    :para cleanup: bool, whether to clean up smiles using chembl_structure_pipeline
+    :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
     :para opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
     :para plot2D: bool, whether or not to plot 2D structure
     """
@@ -74,11 +64,13 @@ def process_multiple_smiles(input_file, smiles_col_name, id_col_name = None, cle
         else:
             name = str(compound_ID[i])
         
-        # cleanup smiles
-        if cleanup:
-            smiles = cleanup_smiles(smiles, cleanup_chirality = False)
+        # cleanup SMILES
+        if cleanup_SMILES:
+            smiles, flag = cleanup_smiles_by_CSP(smiles, cleanup_chirality = False)
+            if not flag:
+                smiles = None
         
-        # generate Molecuule object and 3D structure
+        # generate Molecule object and 3D structure
         molecule = Molecule(name, smiles)    
         molecule.generate_3d_molecule(opt, plot2D)
         if plot2D:
@@ -190,12 +182,12 @@ class Molecule(object):
             self.atoms.append(atom_type)
     
     
-    def read_smiles(self, input_file, cleanup = False):
+    def read_smiles(self, input_file, cleanup_SMILES = False):
         """
-        read smiles from file
+        read SMILES from file
         :para input_file: str, file name
-        :para cleanup: bool, whether to clean up smiles using chembl_structure_pipeline
-        :return: str, smiles or cleaned smiles according to 'cleanup'
+        :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
+        :return: str, SMILES or cleaned SMILES according to 'cleanup'
         """  
         # file name        
         folder, basename = os.path.split(os.path.abspath(input_file))
@@ -209,11 +201,13 @@ class Molecule(object):
             smiles = raw.strip()
         
         # cleanup smiles
-        if cleanup:
-            smiles_cleanup = cleanup_smiles(smiles, cleanup_chirality = False)
+        if cleanup_SMILES:
+            cleaned_SMILES, flag = cleanup_smiles_by_CSP(smiles, cleanup_chirality = False)
+            if not flag:
+                cleaned_SMILES = None
                 
-            self.smiles = smiles_cleanup
-            return smiles_cleanup
+            self.smiles = cleaned_SMILES
+            return cleaned_SMILES
         
         self.smiles = smiles    
         return smiles
@@ -244,7 +238,7 @@ class Molecule(object):
 
 if __name__ == '__main__':
     
-    multiple = False
+    multiple = True
     
     if not multiple:
         ############################################
@@ -253,8 +247,8 @@ if __name__ == '__main__':
         input_file = 'SMILES_to_3D/tests/test.txt'
 
         molecule = Molecule()   
-        molecule.read_smiles(input_file, cleanup = True)
-        molecule.generate_3d_molecule(opt = False, plot2D = True)
+        molecule.read_smiles(input_file, cleanup_SMILES = True)
+        molecule.generate_3d_molecule(opt = True, plot2D = True)
         molecule.write_xyz()
     
     else:    
@@ -262,9 +256,9 @@ if __name__ == '__main__':
         ### process multiple smiles from file ####
         ##########################################
         input_file = 'SMILES_to_3D/tests/test_SMILES_to_3D.csv'
-    
         smiles_col_name = 'SMILES'
-        id_col_name = 'ID'    
-        process_multiple_smiles(input_file, smiles_col_name, id_col_name = id_col_name, cleanup = True, opt = False, plot2D = True)
+        id_col_name = 'ID'
+
+        process_multiple_smiles(input_file, smiles_col_name, id_col_name, cleanup_SMILES = True, opt = True, plot2D = True)
     
     

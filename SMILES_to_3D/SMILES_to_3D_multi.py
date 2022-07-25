@@ -14,7 +14,7 @@ path_list = sys.path
 module_path = '/Users/guohan/Documents/Code/Tool'
 if module_path not in sys.path:
     sys.path.append(module_path)
-    sys.path.append(os.path.join(module_path, utils))
+    sys.path.append(os.path.join(module_path, 'utils'))
     print('Add module path')
 
 from SMILES_to_3D import Molecule, process_multiple_smiles
@@ -151,19 +151,19 @@ if __name__ == '__main__':
     ############################################
     ### Randomly generate SMILES from a file ###
     ############################################
-    smiles_filename = 'TRPML1_ABCFJseries_results.csv'
-    num_smiles = 10
-    smiles_col_name = 'SMILES'
-    id_col_name = 'ID'
-    
-    generate_xyz_input(smiles_filename, num_smiles, smiles_col_name, id_col_name, cleanup = True, opt = True, plot2D = True)
+    # smiles_filename = 'TRPML1_ABCFJseries_results.csv'
+    # num_smiles = 10
+    # smiles_col_name = 'SMILES'
+    # id_col_name = 'ID'
+    #
+    # generate_xyz_input(smiles_filename, num_smiles, smiles_col_name, id_col_name, cleanup = True, opt = True, plot2D = True)
     
     
     ############################################
     ### Generate all SMILES from a file ###
     ############################################
-    smiles_filename = 'TRPML1_ABCFJseries_results.csv'
-    smiles_col_name = 'SMILES'
+    smiles_filename = 'tests/test_SMILES_to_3D.csv'
+    smiles_col_name = 'Cleaned_SMILES'
     id_col_name = 'ID'
     
     process_multiple_smiles(smiles_filename, smiles_col_name, id_col_name, cleanup = True, opt = True, plot2D = True)

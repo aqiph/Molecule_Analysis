@@ -5,8 +5,7 @@ Created on Thu Apr 14 15:58:36 2022
 
 @author: guohan
 """
-import os
-import warnings
+
 import sys
 
 path_list = sys.path
@@ -14,11 +13,6 @@ module_path = '/Users/guohan/Documents/Code/Tool/utils'
 if module_path not in sys.path:
     sys.path.append(module_path)
     print('Add module path')
-
-import numpy as np
-import pandas as pd
-
-from rdkit import Chem
 
 from molecular_description import get_fingerprint, cal_fingerprint_distance
 
@@ -28,9 +22,7 @@ from molecular_description import get_fingerprint, cal_fingerprint_distance
 ###### Nearest Neighbor ######
 ##############################
 
-
 ### Helper functions ###
-
 
 
 ### Find neighbors of centroid data points ###
@@ -50,7 +42,7 @@ def fingerprint_nearest_neighbor(centroid_smiles_list, candidate_smiles_list, fp
                                                          ecfp4: Morgan ECFP4 (connectivity) fingerprint;
                                                          fcfp4: Morgan FCFP4 (feature-based) fingerprint)
                                                          mhfp6: MinHash fingerprint
-    :para cluster_threshold: float
+    :para neighbor_threshold: float, similarity threshold
     """
     fp_method = fp_method.lower()
     
@@ -83,12 +75,9 @@ def fingerprint_nearest_neighbor(centroid_smiles_list, candidate_smiles_list, fp
 
 
 
-
-
-
 if __name__ == '__main__':
     
-    centroid_smiles_list = ['OC(CN1C=NC=N1)(CN1C=NC=N1)C1=C(F)C=C(F)C=C1']
+    centroid_smiles_list = ['OC(CN1C=NC=N1)(CN1C=NC=N1)C1=C(F)C=C(F)C=C1', 'CCO']
     candidate_smiles_list = ['OC(CN1C=NC=N1)(CN1C=NC=N1)C1=C(F)C=C(F)C=C1', 'CCO', 'OCC', 'COO', 'c1ccccn1', 'c1ccco1',
                    'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C',
                    'CCCC1=NN(C2=C1NC(=NC2=O)C3=C(C=CC(=C3)S(=O)(=O)N4CCN(CC4)C)OCC)C']

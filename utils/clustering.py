@@ -5,9 +5,8 @@ Created on Thu Nov  4 13:33:55 2021
 
 @author: guohan
 """
-import os
-import warnings
-import sys
+
+import sys, warnings
 
 path_list = sys.path
 module_path = '/Users/guohan/Documents/Code/Tool/utils'
@@ -17,11 +16,7 @@ if module_path not in sys.path:
 
 import numpy as np
 import pandas as pd
-
-from rdkit import Chem
-
 from sklearn.cluster import DBSCAN
-
 from molecular_description import get_fingerprint, cal_fingerprint_distance, get_scaffold
 
 
@@ -30,7 +25,6 @@ from molecular_description import get_fingerprint, cal_fingerprint_distance, get
 ###### Clustering ######
 ########################
 
-
 ### Helper functions ###
 
 def cluster_from_dist_matrix(dist_matrix, threshold):
@@ -38,7 +32,7 @@ def cluster_from_dist_matrix(dist_matrix, threshold):
     cluster by DBSCAN, the similarity smaller than threshold is not clustered in one cluster,
     DBSCAN eps = 1.0 - threshold
     :para dist_matrix: np.ndarray matrix, similarity matrix
-    :para threshold: float, 1.0 - eps
+    :para threshold: float, similarity threshold, 1.0 - eps
     :return: list of ints, cluster labels
     """    
     # define DBSCAN object
@@ -62,15 +56,14 @@ def cluster_from_dist_matrix(dist_matrix, threshold):
     return labels
 
 
-
 def labels_to_clusters(smiles_list, labels):
     """
     change a list of labels to clusters
-    :para smiles_list: list of strs, list of smiles
-    :para labels: list of int, list of labels for smiles
+    :para smiles_list: list of strs, list of SMILES
+    :para labels: list of int, list of labels for SMILES
     :return: list of lists, clusters
     """
-    assert len(smiles_list) == len(labels), 'The smiles list and labels should have the same length'
+    assert len(smiles_list) == len(labels), 'Error: The smiles list and labels have different lengths'
     
     num_clusters = np.max(labels) + 1
     clusters = [[] for i in range(num_clusters)]
@@ -81,13 +74,12 @@ def labels_to_clusters(smiles_list, labels):
     return clusters   
 
 
-
 ### Clustering by fingerprint ###
 
 def get_fingerprint_dist_matrix(smiles_list, fp_method = 'ecfp4'):
     """
     compute distance matrix
-    :para smiles_list: list of strs, list of smiles
+    :para smiles_list: list of strs, list of SMILES
     :para fp_method: str, method to compute fingerprint (topology: topological fingerprint; 
                                                          maccs: MACCS fingerprint;
                                                          atomPairs: atom pairs;
@@ -118,13 +110,12 @@ def get_fingerprint_dist_matrix(smiles_list, fp_method = 'ecfp4'):
     return np.array(dist_matrix)
 
 
-
-def fingerprint_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold = 0.5, output = 'labels'):
+def fingerprint_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold = 0.5, output_type = 'labels'):
     """
     cluster 'smiles_list' based on fingerprint with method 'fp_method',
     cluster by DBSCAN, the similarity smaller than threshold is not clustered in one cluster,
     DBSCAN eps = 1.0 - threshold
-    :para smiles_list: list of strs, list of smiles
+    :para smiles_list: list of strs, list of SMILES
     :para fp_method: str, method to compute fingerprint (topology: topological fingerprint; 
                                                          maccs: MACCS fingerprint;
                                                          atomPairs: atom pairs;
@@ -133,7 +124,7 @@ def fingerprint_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold =
                                                          fcfp4: Morgan FCFP4 (feature-based) fingerprint)
                                                          mhfp6: MinHash fingerprint
     :para cluster_threshold: float, similarity threshold, 1.0 - eps
-    :para output: str, output format, ('labels', 'clusters')
+    :para output_type: str, output type, ('labels', 'clusters')
     :return: list of ints (labels) or list of lists (clusters)
     """
     smiles_list = np.array(smiles_list)
@@ -141,13 +132,12 @@ def fingerprint_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold =
     
     # calculate dist_matrix, while each elements is 1.0 - similarity
     dist_matrix = get_fingerprint_dist_matrix(smiles_list, fp_method)
-    if True:
+    if False:
         df = pd.DataFrame(dist_matrix)
-        df.to_csv(os.path.join(os.getcwd(), 'distance_matrix.csv'))
+        df.to_csv('distance_matrix.csv')
     
     # cluster by DBSCAN
     labels = cluster_from_dist_matrix(dist_matrix, threshold = cluster_threshold)
-   
     num_labels = np.max(labels) + 1
     
     print('Number of clusters:', num_labels)
@@ -156,29 +146,28 @@ def fingerprint_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold =
             print('Number elements in cluster {} is {}'.format(label, (labels == label).sum()))
     
     # return labels or clusters
-    if output == 'labels':
+    if output_type == 'labels':
         return labels
-    elif output == 'clusters':
+    elif output_type == 'clusters':
         clusters = labels_to_clusters(smiles_list, labels)
         return clusters
     else:
-        warnings.warn('Output is not defined properly, return None')
-
+        warnings.warn('Error: Output type is not defined properly, return None')
 
 
 ### Clustering by scaffold ###
 
-def scaffold_clustering(smiles_list, output = 'labels'):
+def scaffold_clustering(smiles_list, output_type = 'labels'):
     """
     cluster 'smiles_list' by scaffold
-    :para smiles_list: list of strs, list of smiles
-    :para output: str, output format, ('labels', 'clusters')
+    :para smiles_list: list of strs, list of SMILES
+    :para output_type: str, output type, ('labels', 'clusters')
     :return: list of ints (labels) or list of lists (clusters)
     """
-    clusters_dict = {}
+    clusters_dict = {} # {scaffold_smiles: [smiles_id]}
     num_smiles = len(smiles_list)
     
-    # calculate scaffold
+    # calculate scaffold cluster dictionary
     for i, smiles in enumerate(smiles_list):
         scaffold = get_scaffold(smiles, include_chirality = False, generic = False)
         
@@ -190,9 +179,10 @@ def scaffold_clustering(smiles_list, output = 'labels'):
     scaffolds = clusters_dict.keys()
     
     # write scaffold table
-    df = pd.DataFrame([i for i in range(num_scaffold)], columns = ['ID'])
-    df['Scaffold'] = scaffolds
-    df.to_csv('Scaffold.csv')
+    if False:
+        df = pd.DataFrame([i for i in range(num_scaffold)], columns = ['ID'])
+        df['Scaffold'] = scaffolds
+        df.to_csv('Scaffold.csv')
     
     # change to labels
     labels = [-1 for i in range(num_smiles)]
@@ -202,23 +192,20 @@ def scaffold_clustering(smiles_list, output = 'labels'):
             labels[smiles_idx] = ID
     
     labels = np.array(labels)
-    
+
     print('Number of scaffolds:', num_scaffold)
     if True:
         for label in range(num_scaffold):
             print('Number elements in cluster {} is {}'.format(label, (labels == label).sum()))
     
     # return labels or clusters
-    if output == 'labels':
+    if output_type == 'labels':
         return labels
-    elif output == 'clusters':
+    elif output_type == 'clusters':
         clusters = labels_to_clusters(smiles_list, labels)
         return clusters
     else:
-        warnings.warn('Output is not defined properly, return None')
-
-
-
+        warnings.warn('Error: Output type is not defined properly, return None')
 
 
 
@@ -230,12 +217,12 @@ if __name__ == '__main__':
     
     print('*************************')
     print('Clustering by fingerprint')
-    clusters = fingerprint_clustering(smiles_list, fp_method = 'mhfp6', cluster_threshold = 0.5, output = 'clusters')
+    clusters = fingerprint_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold = 0.5, output_type = 'clusters')
     print(clusters)
     
     print('*************************')
     print('Clustering by scaffold')
-    clusters = scaffold_clustering(smiles_list, output = 'clusters')    
+    clusters = scaffold_clustering(smiles_list, output_type = 'clusters')
     print(clusters)
     print('*************************')
     

@@ -10,9 +10,7 @@ Created on Mon Nov  8 17:00:16 2021
 
 """
 
-import os
-import warnings
-import sys
+import os, sys
 
 path_list = sys.path
 module_path = '/Users/guohan/Documents/Code/Tool/utils'
@@ -21,12 +19,9 @@ if module_path not in sys.path:
     print('Add module path')
 
 import pandas as pd
-import numpy as np
-
+import argparse
 from clustering import fingerprint_clustering, scaffold_clustering
 from nearest_neighbor import fingerprint_nearest_neighbor
-
-import argparse
 
 
 def cluster_analysis(args):
@@ -48,10 +43,10 @@ def cluster_analysis(args):
         fp_method = args.fingerprint_method
         cluster_threshold = args.cluster_threshold
         
-        labels = fingerprint_clustering(smiles_list, fp_method, cluster_threshold, output = 'labels')
+        labels = fingerprint_clustering(smiles_list, fp_method, cluster_threshold, output_type = 'labels')
         
     elif args.cluster_method == 'scaffold':
-        labels = scaffold_clustering(smiles_list, output = 'labels')
+        labels = scaffold_clustering(smiles_list, output_type = 'labels')
     
     # add cluster labels
     df['Cluster_label'] = labels
@@ -61,7 +56,6 @@ def cluster_analysis(args):
     
     print('Number of rows:', df.shape[0])
     df.to_csv(output_file)
-
 
 
 def nearest_neighbor_analysis(args):
@@ -98,10 +92,6 @@ def nearest_neighbor_analysis(args):
     print('Number of rows:', df_candidate.shape[0])
     df_candidate.to_csv(output_file)
     
-    
-    
-
-
 
 def get_parser():
     """
@@ -116,12 +106,9 @@ def get_parser():
     argparser.add_argument('-fingerprint_method', default = 'ecfp4', help = 'The method to calculate fingerprint', type = str)
     argparser.add_argument('-cluster_threshold', default = 0.5, help = 'The similarity threshold for clustering', type = float)
     argparser.add_argument('-neighbor_threshold', default = 0.5, help = 'The similarity thresohld for defining nearest neighbor data points')
-    
-    
-    args = argparser.parse_args()
-    
-    return args
 
+    args = argparser.parse_args()
+    return args
 
 
 
