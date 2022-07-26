@@ -15,7 +15,6 @@ Created on Tue Mar 15 10:12:33 2022
 import os, warnings
 import numpy as np
 import pickle
-
 from rdkit.Chem.SaltRemover import SaltRemover
 from rdkit.Chem.Draw import rdMolDraw2D
 from chembl_structure_pipeline import *
