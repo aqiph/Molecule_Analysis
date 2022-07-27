@@ -5,8 +5,9 @@ Created on Mon Nov  8 15:25:47 2021
 
 @author: guohan
 
-1. fingerprint
-2. scaffold
+1. get fingerprint
+2. calculate distance between two SMILES based on fingerprint
+3. get scaffold
 
 """
 

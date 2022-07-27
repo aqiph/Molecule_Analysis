@@ -7,8 +7,9 @@ Created on Tue Mar 15 10:12:33 2022
 
 0. read SMILES
 1. plot 2D structure
-2. clean up SMILES using chembl_structure_pipeline
-3. get molecular features: node features, edge features and topological features
+2. clean up SMILES using chembl_structure_pipeline, remove chirality if required
+3. process disconnected SMILES
+4. get molecular features: node features, edge features and topological features
 
 """
 

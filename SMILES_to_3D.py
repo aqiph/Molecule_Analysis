@@ -5,7 +5,8 @@ Created on Wed Jun 16 10:47:06 2021
 
 @author: guohan
 
-
+1. convert SMILES in a file into 3D structure
+2. convert a single SMILES into 3D structure
 
 """
 
@@ -259,6 +260,6 @@ if __name__ == '__main__':
         smiles_col_name = 'SMILES'
         id_col_name = 'ID'
 
-        process_multiple_smiles(input_file, smiles_col_name, id_col_name, cleanup_SMILES = True, opt = True, plot2D = True)
+        process_multiple_smiles(input_file, smiles_col_name, id_col_name, cleanup_SMILES = True, opt = False, plot2D = True)
     
     

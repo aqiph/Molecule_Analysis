@@ -14,8 +14,8 @@ import os
 import pandas as pd
 import argparse
 
-from utils.clustering import fingerprint_clustering, scaffold_clustering
-from utils.nearest_neighbor import fingerprint_nearest_neighbor
+from utils.clustering import clustering_by_fingerprint, clustering_by_scaffold
+from utils.nearest_neighbor import nearest_neighbor_by_fingerprint
 
 
 def cluster_analysis(args):
@@ -37,10 +37,10 @@ def cluster_analysis(args):
         fp_method = args.fingerprint_method
         cluster_threshold = args.cluster_threshold
         
-        labels = fingerprint_clustering(smiles_list, fp_method, cluster_threshold, output_type = 'labels')
+        labels = clustering_by_fingerprint(smiles_list, fp_method, cluster_threshold, output_type = 'labels')
         
     elif args.cluster_method == 'scaffold':
-        labels = scaffold_clustering(smiles_list, output_type = 'labels')
+        labels = clustering_by_scaffold(smiles_list, output_type = 'labels')
     
     # add cluster labels
     df['Cluster_label'] = labels
@@ -74,7 +74,7 @@ def nearest_neighbor_analysis(args):
     fp_method = args.fingerprint_method
     neighbor_threshold = float(args.neighbor_threshold)
     
-    labels = fingerprint_nearest_neighbor(centroid_smiles_list, candidate_smiles_list, fp_method, neighbor_threshold)
+    labels = nearest_neighbor_by_fingerprint(centroid_smiles_list, candidate_smiles_list, fp_method, neighbor_threshold)
     labels = [int(label) for label in labels]
     
     # add cluster labels
@@ -93,10 +93,10 @@ def get_parser():
     """
     argparser = argparse.ArgumentParser()
     
-    argparser.add_argument('-input_file', default = 'SMILES_analysis/tests/examples.csv', help = 'Input file name')
-    argparser.add_argument('-input_file_centroid', default = 'SMILES_analysis/tests/examples_centroid.csv', help = 'Input file name for centroid data points')
+    argparser.add_argument('-input_file', default = 'cluster_analysis/tests/examples.csv', help = 'Input file name')
+    argparser.add_argument('-input_file_centroid', default = 'cluster_analysis/tests/examples_centroid.csv', help = 'Input file name for centroid data points')
     
-    argparser.add_argument('-cluster_method', default = 'fingerprint', help = 'The method to cluster compound', type = str)    
+    argparser.add_argument('-cluster_method', default = 'fingerprint', help = 'The method to cluster compound', type = str)
     argparser.add_argument('-fingerprint_method', default = 'ecfp4', help = 'The method to calculate fingerprint', type = str)
     argparser.add_argument('-cluster_threshold', default = 0.5, help = 'The similarity threshold for clustering', type = float)
     argparser.add_argument('-neighbor_threshold', default = 0.5, help = 'The similarity thresohld for defining nearest neighbor data points')

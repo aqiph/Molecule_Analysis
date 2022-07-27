@@ -4,9 +4,20 @@
 Created on Thu Nov  4 13:33:55 2021
 
 @author: guohan
+
+1. cluster SMILES by fingerprint
+2. cluster SMILES by scaffold
+
 """
 
-import warnings
+import sys, warnings
+
+path_list = sys.path
+module_path = '/Users/guohan/Documents/Code/Tool/utils'
+if module_path not in sys.path:
+    sys.path.append(module_path)
+    print('Add module path')
+
 import numpy as np
 import pandas as pd
 from sklearn.cluster import DBSCAN
@@ -104,7 +115,7 @@ def get_fingerprint_dist_matrix(smiles_list, fp_method = 'ecfp4'):
     return np.array(dist_matrix)
 
 
-def fingerprint_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold = 0.5, output_type = 'labels'):
+def clustering_by_fingerprint(smiles_list, fp_method = 'ecfp4', cluster_threshold = 0.5, output_type = 'labels'):
     """
     cluster 'smiles_list' based on fingerprint with method 'fp_method',
     cluster by DBSCAN, the similarity smaller than threshold is not clustered in one cluster,
@@ -151,7 +162,7 @@ def fingerprint_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold =
 
 ### Clustering by scaffold ###
 
-def scaffold_clustering(smiles_list, output_type = 'labels'):
+def clustering_by_scaffold(smiles_list, output_type = 'labels'):
     """
     cluster 'smiles_list' by scaffold
     :para smiles_list: list of strs, list of SMILES
@@ -211,12 +222,12 @@ if __name__ == '__main__':
     
     print('*************************')
     print('Clustering by fingerprint')
-    clusters = fingerprint_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold = 0.5, output_type = 'clusters')
+    clusters = clustering_by_fingerprint(smiles_list, fp_method = 'ecfp4', cluster_threshold = 0.5, output_type = 'clusters')
     print(clusters)
     
     print('*************************')
     print('Clustering by scaffold')
-    clusters = scaffold_clustering(smiles_list, output_type = 'clusters')
+    clusters = clustering_by_scaffold(smiles_list, output_type = 'clusters')
     print(clusters)
     print('*************************')
     

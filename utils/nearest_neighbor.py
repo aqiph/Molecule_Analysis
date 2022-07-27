@@ -4,7 +4,18 @@
 Created on Thu Apr 14 15:58:36 2022
 
 @author: guohan
+
+1. find the nearest neighbor of centroid SMILES from candidate SMILES
+
 """
+
+import sys
+
+path_list = sys.path
+module_path = '/Users/guohan/Documents/Code/Tool/utils'
+if module_path not in sys.path:
+    sys.path.append(module_path)
+    print('Add module path')
 
 from molecular_description import get_fingerprint, cal_fingerprint_distance
 
@@ -19,7 +30,7 @@ from molecular_description import get_fingerprint, cal_fingerprint_distance
 
 ### Find neighbors of centroid data points ###
 
-def fingerprint_nearest_neighbor(centroid_smiles_list, candidate_smiles_list, fp_method = 'ecfp4', neighbor_threshold = 0.5):
+def nearest_neighbor_by_fingerprint(centroid_smiles_list, candidate_smiles_list, fp_method = 'ecfp4', neighbor_threshold = 0.5):
     """
     determine whether a molecule in df_candidate is a neighbor of molecules in df_centroid,
     based on fingerprint with method 'fp_method'.
@@ -74,7 +85,7 @@ if __name__ == '__main__':
                    'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C',
                    'CCCC1=NN(C2=C1NC(=NC2=O)C3=C(C=CC(=C3)S(=O)(=O)N4CCN(CC4)C)OCC)C']
     
-    labels = fingerprint_nearest_neighbor(centroid_smiles_list, candidate_smiles_list, fp_method = 'ecfp4', neighbor_threshold = 0.5)
+    labels = nearest_neighbor_by_fingerprint(centroid_smiles_list, candidate_smiles_list, fp_method = 'ecfp4', neighbor_threshold = 0.5)
     print(labels)
     
 
