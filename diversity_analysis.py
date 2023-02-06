@@ -6,6 +6,7 @@ Created on Tue Mar 15 10:12:33 2022
 @author: guohan
 
 1. calculate the number of scaffolds in the given input file
+2. plot distance distribution based on fingerprint
 
 """
 
@@ -57,7 +58,7 @@ def cal_num_scaffold(input_file, smiles_column_name = 'SMILES'):
     df_scaffold.to_csv('{}_scaffold.csv'.format(output_file))
 
 
-### calculate the number of scaffolds in the given input file ###
+### plot distance distribution based on fingerprint  ###
 
 def plot_distance_distribution_by_fingerprint(input_file, smiles_column_name = 'SMILES', fp_method = 'ecfp4'):
     """

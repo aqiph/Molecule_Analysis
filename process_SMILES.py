@@ -5,16 +5,17 @@ Created on Tue Mar 15 10:12:33 2022
 
 @author: guohan
 
-0. read SMILES
-1. plot 2D structure
-2. clean up SMILES using chembl_structure_pipeline, remove chirality if required
-3. process disconnected SMILES
+1. process SMILES
+2. plot 2D structure
+3. clean up SMILES using chembl_structure_pipeline, remove chirality if required
+3. clean up disconnected SMILES, i.e., SMILES that contains '.'
 4. get molecular features: node features, edge features and topological features
 
 """
 
 import os, warnings
 import numpy as np
+import pandas as pd
 import pickle
 from rdkit.Chem.SaltRemover import SaltRemover
 from rdkit.Chem.Draw import rdMolDraw2D
@@ -23,31 +24,25 @@ from chembl_structure_pipeline.checker import *
 
 
 
-### read SMILES ###
+### process SMILES ###
 
-def read_smiles(input_file, cleanup_SMILES = True, cleanup_chirality = False,
-                process_disconnection = False, process_disconnection_method = None, plot2D = True, legend = None):
+def process_SMILES(smiles, id, folder, cleanup_SMILES, cleanup_chirality, process_disconnection, process_disconnection_method,
+                   addH, plot2D, legend):
     """
-    read SMILES from file
-    :para input_file: str, input file name
+    read and process SMILES
+    :para smiles: str, SMILES
+    :para id: str, the ID of the SMILES
+    :para folder: str, the folder path of the output plot
     :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
     :para cleanup_chirality: bool, whether or not to remove chirality
     :para process_disconnection: bool, whether or not to process disconnected SMILES
     :para process_disconnection_method: str, method for processing other disconnected SMILES,
     if process_disconnection_method == 'keep_longest', keep the longest part in SMILES
+    if process_disconnection_method == 'keep_most_atoms', keep the part with the most atoms
     :para plot2D: bool, whether or not plot the SMILES
     :para legend: str or None, legend of plot
     :return: (str, str), SMILES or cleaned SMILES according to 'cleanup' and file name
     """
-    # file name
-    folder, basename = os.path.split(os.path.abspath(input_file))
-    name = os.path.splitext(basename)[0]
-        
-    # read SMILES
-    with open(input_file, 'r') as f:
-        raw = f.readline()
-        smiles = raw.strip()
-    
     # check if SMILES is valid
     if not smiles:
         print(f"Error: Invalid SMILES {smiles}")
@@ -60,7 +55,7 @@ def read_smiles(input_file, cleanup_SMILES = True, cleanup_chirality = False,
     if not mol:
         print(f"Error: Invalid SMILES {smiles}")
         return None
-        
+
     # clean up and canonicalize SMILES, remove chirality if required
     if cleanup_SMILES:
         smiles, flag = cleanup_smiles_by_CSP(smiles, cleanup_chirality)
@@ -73,17 +68,111 @@ def read_smiles(input_file, cleanup_SMILES = True, cleanup_chirality = False,
     # process disconnected SMILES
     if process_disconnection:
         smiles, _ = cleanup_disconnected_smiles(smiles, process_disconnection_method)
-    
+
+    if addH:
+        mol = Chem.MolFromSmiles(smiles)
+        mol = Chem.AddHs(mol)
+        smiles = Chem.MolToSmiles(mol)
+
     # plot SMILES
     if plot2D:
-        if legend is None:
-            legend = name
+        if legend == 'ID':
+            legend = id
         elif legend == 'SMILES':
             legend = smiles
+        else:
+            legend = ''
 
-        plot_2d_molecule_from_smiles(smiles, os.path.join(folder, name), legend)
+        plot_2d_molecule_from_smiles(smiles, os.path.join(folder, id), legend)
+
+    return smiles, id
+
+
+def process_single_SMILES(input_file, cleanup_SMILES = True, cleanup_chirality = False,
+                          process_disconnection = False, process_disconnection_method = None,
+                          addH = False, plot2D = True, legend = None):
+    """
+    read and process a single SMILES from file
+    :para input_file: str, the name of the input file
+    :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
+    :para cleanup_chirality: bool, whether or not to remove chirality
+    :para process_disconnection: bool, whether or not to process disconnected SMILES
+    :para process_disconnection_method: str, method for processing other disconnected SMILES,
+    if process_disconnection_method == 'keep_longest', keep the longest part in SMILES
+    if process_disconnection_method == 'keep_most_atoms', keep the part with the most atoms
+    :para plot2D: bool, whether or not plot the SMILES
+    :para legend: str or None, legend of plot
+    :return: (str, str), SMILES or cleaned SMILES according to 'cleanup' and file name
+    """
+    # file name
+    folder, basename = os.path.split(os.path.abspath(input_file))
+    id = os.path.splitext(basename)[0]
         
-    return smiles, name
+    # read SMILES
+    with open(input_file, 'r') as f:
+        raw = f.readline()
+        smiles = raw.strip()
+
+    # process SMILES
+    smiles, id = process_SMILES(smiles, id, folder, cleanup_SMILES = cleanup_SMILES, cleanup_chirality = cleanup_chirality,
+                                process_disconnection = process_disconnection, process_disconnection_method = process_disconnection_method,
+                                addH = addH, plot2D = plot2D, legend = legend)
+        
+    return smiles, id
+
+
+def process_multiple_SMILES(input_file, smiles_column_name, id_column_name, cleanup_SMILES = True, cleanup_chirality = False,
+                            process_disconnection = False, process_disconnection_method = None,
+                            addH = False, plot2D = True, legend = None):
+    """
+    read and process multiple SMILES from file
+    :para input_file: str, the name of the input file
+    :para smiles_column_name: str, the column name of the smiles
+    :para id_column_name: str, the column name of the id
+    :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
+    :para cleanup_chirality: bool, whether or not to remove chirality
+    :para process_disconnection: bool, whether or not to process disconnected SMILES
+    :para process_disconnection_method: str, method for processing other disconnected SMILES,
+    if process_disconnection_method == 'keep_longest', keep the longest part in SMILES
+    if process_disconnection_method == 'keep_most_atoms', keep the part with the most atoms
+    :para plot2D: bool, whether or not plot the SMILES
+    :para legend: str or None, legend of plot
+    :return: (str, str), SMILES or cleaned SMILES according to 'cleanup' and file name
+    """
+    # output name
+    folder, basename = os.path.split(os.path.abspath(input_file))
+    output_file, fmt = os.path.splitext(basename)
+
+    folder = os.path.join(folder, output_file)
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    # get DataFrame from input file
+    if fmt in {'.xls', '.xlsx'}:
+        df = pd.read_excel(input_file)
+    elif fmt == '.csv':
+        df = pd.read_csv(input_file)
+    else:
+        print('smiles input file is not readed')
+        return
+
+    # get list of id and smiles
+    SMILES = df[smiles_column_name].values.tolist()
+    num_smiles = len(SMILES)
+
+    if id_column_name is None:
+        compound_ID = [i for i in range(num_smiles)]
+    else:
+        compound_ID = df[id_column_name].values.tolist()
+
+    # generate smiles
+    for i, smiles in enumerate(SMILES):
+        id = str(compound_ID[i])
+        print('Molecule:', id)
+
+        process_SMILES(smiles, id, folder, cleanup_SMILES=cleanup_SMILES, cleanup_chirality=cleanup_chirality,
+                       process_disconnection=process_disconnection, process_disconnection_method=process_disconnection_method,
+                       addH = addH, plot2D=plot2D, legend=legend)
 
 
 ### plot 2D structure ###
@@ -196,6 +285,7 @@ def cleanup_disconnected_smiles(smiles, process_disconnection_method):
     :para smiles: str, SMILES
     :para process_disconnection_method: str, method for processing other disconnected SMILES,
     if process_disconnection_method == 'keep_longest', keep the longest part in SMILES
+    if process_disconnection_method == 'keep_most_atoms', keep the part with the most atoms
     """
     if '.' in smiles:
         print('Process disconnected SMILES')
@@ -212,6 +302,11 @@ def cleanup_disconnected_smiles(smiles, process_disconnection_method):
         # process other disconnected SMILES
         if '.' in smiles and process_disconnection_method == 'keep_longest':
             smiles = max(smiles.split('.'), key = len)
+
+        elif '.' in smiles and process_disconnection_method == 'keep_most_atoms':
+            fragment_list = smiles.split('.')
+            fragment_length_list = [len(Chem.MolFromSmiles(fragment).GetAtoms()) for fragment in fragment_list]
+            smiles = fragment_list[np.argmax(fragment_length_list)]
 
         # canonicalize and check SMILES
         mol = Chem.MolFromSmiles(smiles)
@@ -368,28 +463,44 @@ def get_adjacency_info(mol):
 ####
 
 if __name__ == '__main__':
-    
-    input_file = 'process_SMILES/tests/test.txt'
-    smiles, name = read_smiles(input_file, cleanup_SMILES = True, cleanup_chirality = False,
-                               process_disconnection = False, process_disconnection_method = None,
-                               plot2D = True, legend = 'SMILES')
-  
-    if False:
-        print('#########')
-        name += '_get_feature'
-        node_feats, edge_feats, edge_index = get_feature_from_smiles(smiles, name, addH = False, node_ext_feature = True, plot2D = True, legend = 'SMILES')
-        
-        print('#########')
-        print('Node features')
-        print(node_feats)
-        print('#########')
-        print('Edge features')
-        print(edge_feats)
-        print('#########')
-        print('Edge index')
-        print(edge_index)
-    
-    
 
+    multiple = False
+
+    if not multiple:
+        ############################################
+        ### process one smile from an input file ###
+        ############################################
+        input_file = 'process_SMILES/tests/test.txt'
+        smiles, id = process_single_SMILES(input_file, cleanup_SMILES = True, cleanup_chirality = False,
+                                           process_disconnection = False, process_disconnection_method = 'keep_most_atoms',
+                                           addH = False, plot2D = True, legend = 'SMILES')
+
+        features = False
+        if features:
+            print('#########')
+            id += '_get_feature'
+            node_feats, edge_feats, edge_index = get_feature_from_smiles(smiles, id, addH = False, node_ext_feature = True, plot2D = True, legend = 'SMILES')
+        
+            print('#########')
+            print('Node features')
+            print(node_feats)
+            print('#########')
+            print('Edge features')
+            print(edge_feats)
+            print('#########')
+            print('Edge index')
+            print(edge_index)
+    
+    else:
+        ##########################################
+        ### process multiple smiles from file ####
+        ##########################################
+        input_file = 'process_SMILES/tests/test.csv'
+        smiles_column_name = 'SMILES'
+        id_column_name = 'ID'
+
+        process_multiple_SMILES(input_file, smiles_column_name, id_column_name, cleanup_SMILES=False, cleanup_chirality=False,
+                                process_disconnection=False, process_disconnection_method='keep_most_atoms',
+                                addH = False, plot2D=True, legend='SMILES')
 
 

@@ -141,7 +141,7 @@ def clustering_by_fingerprint(smiles_list, fp_method = 'ecfp4', cluster_threshol
         df = pd.DataFrame(dist_matrix)
         df.to_csv('distance_matrix.csv')
     
-    # cluster by DBSCAN
+    # cluster using DBSCAN
     labels = cluster_from_dist_matrix(dist_matrix, threshold = cluster_threshold)
     num_labels = np.max(labels) + 1
     

@@ -1,1 +1,1 @@
-O=C([O-])c1cc(=O)[nH]c(=O)[nH]1.O=C([O-])c1cc(=O)[nH]c(=O)[nH]1.[Zn+2]
+CN(C)c1ccc(NC(=O)C2C(c3ncc(F)cn3)C2(C)C)nc1C(F)(F)F
