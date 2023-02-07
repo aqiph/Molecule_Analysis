@@ -1,4 +1,3 @@
-### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -11,5 +10,6 @@ __pycache__/
 
 **/.DS_Store
 
+# Jupter
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
