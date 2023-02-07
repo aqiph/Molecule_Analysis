@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 
 path_list = sys.path
-module_path = '/Users/guohan/Documents/Code/Tool'
+module_path = '/Users/guohan/Documents/Codes/Molecule_Analysis'
 if module_path not in sys.path:
     sys.path.append(module_path)
     sys.path.append(os.path.join(module_path, 'utils'))
@@ -30,10 +30,10 @@ from util import cleanup_smiles
 def rand_smiles_list(smiles_filename, num_smiles, smiles_col_name, id_col_name):
     """
     randomly choose num_smiles of smiles from input_file_name
-    :para smiles_filename:
-    :para num_smiles:
-    :para smiles_col_name: str, the column name of the smiles
-    :para id_col_name: str, the column name of the id
+    :param smiles_filename:
+    :param num_smiles:
+    :param smiles_col_name: str, the column name of the smiles
+    :param id_col_name: str, the column name of the id
     :return:
     """
     # file name
@@ -86,9 +86,9 @@ def rand_smiles_list(smiles_filename, num_smiles, smiles_col_name, id_col_name):
 def smiles_to_xyz(name, smiles, cleanup, opt, plot2D):
     """
     convert a smiles to a .xyz file
-    :para name: str
-    :para smiles: str, smiles string
-    :para cleanup: bool, whether to clean up smiles using chembl_structure_pipeline
+    :param name: str
+    :param smiles: str, smiles string
+    :param cleanup: bool, whether to clean up smiles using chembl_structure_pipeline
     :return: None
     """
     assert type(smiles) == str and len(smiles) > 0
@@ -108,13 +108,13 @@ def smiles_to_xyz(name, smiles, cleanup, opt, plot2D):
 def generate_xyz_input(smiles_filename, num_smiles, smiles_col_name, id_col_name, cleanup = False, opt = True, plot2D = True):
     """
     generate num_smiles of .xyz files for smiles randomly chosen from csv_file
-    :para smiles_filename:
-    :para num_smiles:
-    :para smiles_col_name: str, the column name of the smiles
-    :para id_col_name: str, the column name of the id
-    :para cleanup: bool, whether to clean up smiles using chembl_structure_pipeline
-    :para opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
-    :para plot2D: bool, whether or not to plot 2D structure
+    :param smiles_filename:
+    :param num_smiles:
+    :param smiles_col_name: str, the column name of the smiles
+    :param id_col_name: str, the column name of the id
+    :param cleanup: bool, whether to clean up smiles using chembl_structure_pipeline
+    :param opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
+    :param plot2D: bool, whether or not to plot 2D structure
     """
     # folder
     save_root_folder = os.path.join(os.getcwd(), 'dataset')

@@ -25,8 +25,8 @@ from rdkit.Chem.Scaffolds import MurckoScaffold
 def get_fingerprint(smiles, fp_method = 'ecfp4'):
     """
     compute the fingerprint of the input smiles
-    :para smiles: str, input SMILES
-    :para fp_method: str, method to compute fingerprint (topology: topological fingerprint; 
+    :param smiles: str, input SMILES
+    :param fp_method: str, method to compute fingerprint (topology: topological fingerprint;
                                                          maccs: MACCS fingerprint;
                                                          atomPairs: atom pairs;
                                                          torsions: topological torsions;
@@ -77,9 +77,9 @@ def cal_fingerprint_distance(fp_1, fp_2, fp_method = 'ecfp4'):
     """
     use Tanimoto/Jaccard algorithm to compute distance between fp_1 and fp2: 
     similarity = #(common feature)/len(fp), distance = 1 - similarity
-    :para fp_1: fingerprint for molecule_1
-    :para fp_2: fingerprint for molecule_2
-    :para fp_method: str, method to compute fingerprint (topology: topological fingerprint;
+    :param fp_1: fingerprint for molecule_1
+    :param fp_2: fingerprint for molecule_2
+    :param fp_method: str, method to compute fingerprint (topology: topological fingerprint;
                                                          maccs: MACCS fingerprint;
                                                          atomPairs: atom pairs;
                                                          torsions: topological torsions;
@@ -109,9 +109,9 @@ def cal_fingerprint_distance(fp_1, fp_2, fp_method = 'ecfp4'):
 def get_scaffold(smiles, include_chirality = False, generic = False):
     """
     compute the Bemis-Murcko scaffold for a SMILES string
-    :para smiles: str, input SMILES
-    :para include_chirality: bool, whether or not using chirality
-    :para generic: bool, whether or not make the scaffold generic
+    :param smiles: str, input SMILES
+    :param include_chirality: bool, whether or not using chirality
+    :param generic: bool, whether or not make the scaffold generic
     (i.e., change all heavy atoms to the same one, ignore bond order)
     :return: str or None, SMILES of the BM scaffold
     """

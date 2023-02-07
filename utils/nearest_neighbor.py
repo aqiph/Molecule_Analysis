@@ -12,7 +12,7 @@ Created on Thu Apr 14 15:58:36 2022
 import sys
 
 path_list = sys.path
-module_path = '/Users/guohan/Documents/Code/Tool/utils'
+module_path = '/Users/guohan/Documents/Codes/Molecule_Analysis/utils'
 if module_path not in sys.path:
     sys.path.append(module_path)
     print('Add module path')
@@ -36,16 +36,16 @@ def nearest_neighbor_by_fingerprint(centroid_smiles_list, candidate_smiles_list,
     based on fingerprint with method 'fp_method'.
     if the similarity is larger than neighbor_threshold,
     the candidate molecule is considered as a neighbor of centroid molecule
-    :para centroid_smiles_list: list of SMILES, the centroid molecules
-    :para candidate_smiles_list: list of SMILES, the candidate molecules
-    :para fp_method: str, method to compute fingerprint (topology: topological fingerprint; 
+    :param centroid_smiles_list: list of SMILES, the centroid molecules
+    :param candidate_smiles_list: list of SMILES, the candidate molecules
+    :param fp_method: str, method to compute fingerprint (topology: topological fingerprint;
                                                          maccs: MACCS fingerprint;
                                                          atomPairs: atom pairs;
                                                          torsions: topological torsions;
                                                          ecfp4: Morgan ECFP4 (connectivity) fingerprint;
                                                          fcfp4: Morgan FCFP4 (feature-based) fingerprint)
                                                          mhfp6: MinHash fingerprint
-    :para neighbor_threshold: float, similarity threshold
+    :param neighbor_threshold: float, similarity threshold
     """
     fp_method = fp_method.lower()
     

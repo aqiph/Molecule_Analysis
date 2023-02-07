@@ -25,10 +25,10 @@ from process_SMILES import plot_2d_molecule_from_mol, cleanup_smiles_by_CSP
 def convert_single_SMILES_to_Coord(input_file, cleanup_SMILES = False, opt = True, plot2D = True):
     """
     read a single SMILES from excel, generate .xyz file of each smiles in the input_file
-    :para input_file: str, the name of the input file
-    :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
-    :para opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
-    :para plot2D: bool, whether or not to plot 2D structure
+    :param input_file: str, the name of the input file
+    :param cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
+    :param opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
+    :param plot2D: bool, whether or not to plot 2D structure
     """
     # output name
     folder, basename = os.path.split(os.path.abspath(input_file))
@@ -56,12 +56,12 @@ def convert_single_SMILES_to_Coord(input_file, cleanup_SMILES = False, opt = Tru
 def convert_multiple_SMILES_to_Coord(input_file, smiles_column_name, id_column_name = None, cleanup_SMILES = False, opt = True, plot2D = True):
     """
     read multiple SMILES from excel, generate .xyz file of each smiles in the input_file
-    :para input_file: str, the name of the input file
-    :para smiles_column_name: str, the column name of the smiles
-    :para id_column_name: str, the column name of the id
-    :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
-    :para opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
-    :para plot2D: bool, whether or not to plot 2D structure
+    :param input_file: str, the name of the input file
+    :param smiles_column_name: str, the column name of the smiles
+    :param id_column_name: str, the column name of the id
+    :param cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
+    :param opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
+    :param plot2D: bool, whether or not to plot 2D structure
     """
     # output name
     folder, basename = os.path.split(os.path.abspath(input_file))
@@ -141,9 +141,9 @@ class Molecule(object):
     def generate_3d_molecule(self, folder, opt = True, plot2D = True):
         """
         Generate .xyz file of the molecule. If opt == True, optimize molecule with the MMFF94 force field
-        :para folder: str, the name of the folder
-        :para opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
-        :para plot2D: bool, whether or not to plot 2D structure
+        :param folder: str, the name of the folder
+        :param opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
+        :param plot2D: bool, whether or not to plot 2D structure
         :return: None
         """        
         if self.smiles is None:
@@ -198,7 +198,7 @@ class Molecule(object):
     def write_xyz(self, folder):
         """
         output .xyz file
-        :para folder: str, the name of the folder
+        :param folder: str, the name of the folder
         """        
         if len(self.xyz) <= 0:
             print('xyz is empty')

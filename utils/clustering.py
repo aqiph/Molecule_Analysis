@@ -13,7 +13,7 @@ Created on Thu Nov  4 13:33:55 2021
 import sys, warnings
 
 path_list = sys.path
-module_path = '/Users/guohan/Documents/Code/Tool/utils'
+module_path = '/Users/guohan/Documents/Codes/Molecule_Analysis/utils'
 if module_path not in sys.path:
     sys.path.append(module_path)
     print('Add module path')
@@ -36,8 +36,8 @@ def cluster_from_dist_matrix(dist_matrix, threshold):
     """
     cluster by DBSCAN, the similarity smaller than threshold is not clustered in one cluster,
     DBSCAN eps = 1.0 - threshold
-    :para dist_matrix: np.ndarray matrix, similarity matrix
-    :para threshold: float, similarity threshold, 1.0 - eps
+    :param dist_matrix: np.ndarray matrix, similarity matrix
+    :param threshold: float, similarity threshold, 1.0 - eps
     :return: list of ints, cluster labels
     """    
     # define DBSCAN object
@@ -64,8 +64,8 @@ def cluster_from_dist_matrix(dist_matrix, threshold):
 def labels_to_clusters(smiles_list, labels):
     """
     change a list of labels to clusters
-    :para smiles_list: list of strs, list of SMILES
-    :para labels: list of int, list of labels for SMILES
+    :param smiles_list: list of strs, list of SMILES
+    :param labels: list of int, list of labels for SMILES
     :return: list of lists, clusters
     """
     assert len(smiles_list) == len(labels), 'Error: The smiles list and labels have different lengths'
@@ -84,8 +84,8 @@ def labels_to_clusters(smiles_list, labels):
 def get_fingerprint_dist_matrix(smiles_list, fp_method = 'ecfp4'):
     """
     compute distance matrix
-    :para smiles_list: list of strs, list of SMILES
-    :para fp_method: str, method to compute fingerprint (topology: topological fingerprint; 
+    :param smiles_list: list of strs, list of SMILES
+    :param fp_method: str, method to compute fingerprint (topology: topological fingerprint;
                                                          maccs: MACCS fingerprint;
                                                          atomPairs: atom pairs;
                                                          torsions: topological torsions;
@@ -120,16 +120,16 @@ def clustering_by_fingerprint(smiles_list, fp_method = 'ecfp4', cluster_threshol
     cluster 'smiles_list' based on fingerprint with method 'fp_method',
     cluster by DBSCAN, the similarity smaller than threshold is not clustered in one cluster,
     DBSCAN eps = 1.0 - threshold
-    :para smiles_list: list of strs, list of SMILES
-    :para fp_method: str, method to compute fingerprint (topology: topological fingerprint; 
+    :param smiles_list: list of strs, list of SMILES
+    :param fp_method: str, method to compute fingerprint (topology: topological fingerprint;
                                                          maccs: MACCS fingerprint;
                                                          atomPairs: atom pairs;
                                                          torsions: topological torsions;
                                                          ecfp4: Morgan ECFP4 (connectivity) fingerprint;
                                                          fcfp4: Morgan FCFP4 (feature-based) fingerprint)
                                                          mhfp6: MinHash fingerprint
-    :para cluster_threshold: float, similarity threshold, 1.0 - eps
-    :para output_type: str, output type, ('labels', 'clusters')
+    :param cluster_threshold: float, similarity threshold, 1.0 - eps
+    :param output_type: str, output type, ('labels', 'clusters')
     :return: list of ints (labels) or list of lists (clusters)
     """
     smiles_list = np.array(smiles_list)
@@ -165,8 +165,8 @@ def clustering_by_fingerprint(smiles_list, fp_method = 'ecfp4', cluster_threshol
 def clustering_by_scaffold(smiles_list, output_type = 'labels'):
     """
     cluster 'smiles_list' by scaffold
-    :para smiles_list: list of strs, list of SMILES
-    :para output_type: str, output type, ('labels', 'clusters')
+    :param smiles_list: list of strs, list of SMILES
+    :param output_type: str, output type, ('labels', 'clusters')
     :return: list of ints (labels) or list of lists (clusters)
     """
     clusters_dict = {} # {scaffold_smiles: [smiles_id]}

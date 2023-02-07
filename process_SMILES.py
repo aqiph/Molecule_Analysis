@@ -30,17 +30,17 @@ def process_SMILES(smiles, id, folder, cleanup_SMILES, cleanup_chirality, proces
                    addH, plot2D, legend):
     """
     read and process SMILES
-    :para smiles: str, SMILES
-    :para id: str, the ID of the SMILES
-    :para folder: str, the folder path of the output plot
-    :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
-    :para cleanup_chirality: bool, whether or not to remove chirality
-    :para process_disconnection: bool, whether or not to process disconnected SMILES
-    :para process_disconnection_method: str, method for processing other disconnected SMILES,
+    :param smiles: str, SMILES
+    :param id: str, the ID of the SMILES
+    :param folder: str, the folder path of the output plot
+    :param cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
+    :param cleanup_chirality: bool, whether or not to remove chirality
+    :param process_disconnection: bool, whether or not to process disconnected SMILES
+    :param process_disconnection_method: str, method for processing other disconnected SMILES,
     if process_disconnection_method == 'keep_longest', keep the longest part in SMILES
     if process_disconnection_method == 'keep_most_atoms', keep the part with the most atoms
-    :para plot2D: bool, whether or not plot the SMILES
-    :para legend: str or None, legend of plot
+    :param plot2D: bool, whether or not plot the SMILES
+    :param legend: str or None, legend of plot
     :return: (str, str), SMILES or cleaned SMILES according to 'cleanup' and file name
     """
     # check if SMILES is valid
@@ -93,15 +93,15 @@ def process_single_SMILES(input_file, cleanup_SMILES = True, cleanup_chirality =
                           addH = False, plot2D = True, legend = None):
     """
     read and process a single SMILES from file
-    :para input_file: str, the name of the input file
-    :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
-    :para cleanup_chirality: bool, whether or not to remove chirality
-    :para process_disconnection: bool, whether or not to process disconnected SMILES
-    :para process_disconnection_method: str, method for processing other disconnected SMILES,
+    :param input_file: str, the name of the input file
+    :param cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
+    :param cleanup_chirality: bool, whether or not to remove chirality
+    :param process_disconnection: bool, whether or not to process disconnected SMILES
+    :param process_disconnection_method: str, method for processing other disconnected SMILES,
     if process_disconnection_method == 'keep_longest', keep the longest part in SMILES
     if process_disconnection_method == 'keep_most_atoms', keep the part with the most atoms
-    :para plot2D: bool, whether or not plot the SMILES
-    :para legend: str or None, legend of plot
+    :param plot2D: bool, whether or not plot the SMILES
+    :param legend: str or None, legend of plot
     :return: (str, str), SMILES or cleaned SMILES according to 'cleanup' and file name
     """
     # file name
@@ -126,17 +126,17 @@ def process_multiple_SMILES(input_file, smiles_column_name, id_column_name, clea
                             addH = False, plot2D = True, legend = None):
     """
     read and process multiple SMILES from file
-    :para input_file: str, the name of the input file
-    :para smiles_column_name: str, the column name of the smiles
-    :para id_column_name: str, the column name of the id
-    :para cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
-    :para cleanup_chirality: bool, whether or not to remove chirality
-    :para process_disconnection: bool, whether or not to process disconnected SMILES
-    :para process_disconnection_method: str, method for processing other disconnected SMILES,
+    :param input_file: str, the name of the input file
+    :param smiles_column_name: str, the column name of the smiles
+    :param id_column_name: str, the column name of the id
+    :param cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
+    :param cleanup_chirality: bool, whether or not to remove chirality
+    :param process_disconnection: bool, whether or not to process disconnected SMILES
+    :param process_disconnection_method: str, method for processing other disconnected SMILES,
     if process_disconnection_method == 'keep_longest', keep the longest part in SMILES
     if process_disconnection_method == 'keep_most_atoms', keep the part with the most atoms
-    :para plot2D: bool, whether or not plot the SMILES
-    :para legend: str or None, legend of plot
+    :param plot2D: bool, whether or not plot the SMILES
+    :param legend: str or None, legend of plot
     :return: (str, str), SMILES or cleaned SMILES according to 'cleanup' and file name
     """
     # output name
@@ -180,10 +180,10 @@ def process_multiple_SMILES(input_file, smiles_column_name, id_column_name, clea
 def plot_2d_molecule_from_mol(molecule, output_file_without_ext, legend = '', atomNumber = None):
     """
     plot 2D structure of molecule
-    :para molecule: 'mol' object from ridkit
-    :para output_file_without_ext: output file name without extension
-    :para legend: str, legend of plot
-    :para atomNumber: bool or 'mapNumber' or 'atomIndex', add atom map number or add atom indices
+    :param molecule: 'mol' object from ridkit
+    :param output_file_without_ext: output file name without extension
+    :param legend: str, legend of plot
+    :param atomNumber: bool or 'mapNumber' or 'atomIndex', add atom map number or add atom indices
     :return: None
     """ 
     # plot molecule       
@@ -205,10 +205,10 @@ def plot_2d_molecule_from_mol(molecule, output_file_without_ext, legend = '', at
 def plot_2d_molecule_from_smiles(smiles, output_file_without_ext, legend = '', atomNumber = None):
     """
     plot 2D structure of molecule
-    :para smiles: str, SMILES of the molecule to plot
-    :para output_file_without_ext: output file name without extension
-    :para legend: str, legend of plot
-    :para atomNumber: bool or 'mapNumber' or 'atomIndex', add atom map number or add atom indices
+    :param smiles: str, SMILES of the molecule to plot
+    :param output_file_without_ext: output file name without extension
+    :param legend: str, legend of plot
+    :param atomNumber: bool or 'mapNumber' or 'atomIndex', add atom map number or add atom indices
     :return: None
     """
     # check if SMILES is valid
@@ -245,8 +245,8 @@ def plot_2d_molecule_from_smiles(smiles, output_file_without_ext, legend = '', a
 def cleanup_smiles_by_CSP(smiles, cleanup_chirality = False):
     """
     clean up a single SMILES with chembl_structure_pipeline
-    :para smiles: str, SMILES
-    :para cleanup_chirality: bool, whether or not to remove chirality
+    :param smiles: str, SMILES
+    :param cleanup_chirality: bool, whether or not to remove chirality
     :return: cleaned SMILES by chembl_structure_pipeline, flag to indicate if this SMILES is valid,
     if the SMILES is not valid, return the original SMILES with flag = False
     """
@@ -282,8 +282,8 @@ def cleanup_smiles_by_CSP(smiles, cleanup_chirality = False):
 def cleanup_disconnected_smiles(smiles, process_disconnection_method):
     """
     record and process a single disconnected SMILES (containing '.', i.e., polymer, salt, solvent)
-    :para smiles: str, SMILES
-    :para process_disconnection_method: str, method for processing other disconnected SMILES,
+    :param smiles: str, SMILES
+    :param process_disconnection_method: str, method for processing other disconnected SMILES,
     if process_disconnection_method == 'keep_longest', keep the longest part in SMILES
     if process_disconnection_method == 'keep_most_atoms', keep the part with the most atoms
     """
@@ -324,12 +324,12 @@ def cleanup_disconnected_smiles(smiles, process_disconnection_method):
 def get_feature_from_smiles(smiles, name, addH = False, node_ext_feature=False, plot2D = True, legend = None):
     """
     get molecule features from SMILES
-    :para SMILES: str, the SMILES of the input molecule
-    :para name: str, the name of the input molecule    
-    :para addH: bool, whether or not to add H back to molecule
-    :para node_ext_feature: bool, whether or not to add extra features
-    :para plot2D: bool, whether or not plot the SMILES
-    :para legend: str or None, legend of plot, 
+    :param SMILES: str, the SMILES of the input molecule
+    :param name: str, the name of the input molecule
+    :param addH: bool, whether or not to add H back to molecule
+    :param node_ext_feature: bool, whether or not to add extra features
+    :param plot2D: bool, whether or not plot the SMILES
+    :param legend: str or None, legend of plot,
     """
     mol = Chem.MolFromSmiles(smiles)
     

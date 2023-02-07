@@ -21,7 +21,7 @@ from chembl_structure_pipeline.checker import *
 def preprocess_smiles(smiles):
     """
     helper function for cleanning up smiles using cleanup_smiles_GChem
-    :para smiles: str smiles
+    :param smiles: str smiles
     :return: cleaned smiles by chembl_structure_pipeline
     """
     flag = 1
@@ -49,10 +49,10 @@ def preprocess_smiles(smiles):
 def plot_2d_molecule(molecule, name, legend = '', atomNumber = None):
     """
     plot 2D structure of molecule
-    :para molecule: 'mol' object from ridkit
-    :para name: output file name without extension
-    :para legend: str, legend of plot
-    :para atomNumber: bool or 'mapNumber' or 'atomIndex', add atom map number or add atom indices
+    :param molecule: 'mol' object from ridkit
+    :param name: output file name without extension
+    :param legend: str, legend of plot
+    :param atomNumber: bool or 'mapNumber' or 'atomIndex', add atom map number or add atom indices
     :return: None
     """        
     d = rdMolDraw2D.MolDraw2DCairo(450, 400)
@@ -73,9 +73,9 @@ def plot_2d_molecule(molecule, name, legend = '', atomNumber = None):
 def process_multiple_smiles(smiles_filename, smiles_name, id_name = None):
     """
     read smiles from excel, generate .xyz file of each smiles in the smiles_filename
-    :para smiles_filename: str, name of input file
-    :para smiles_name: str, the column name of the smiles
-    :para id_name: str, the column name of the id
+    :param smiles_filename: str, name of input file
+    :param smiles_name: str, the column name of the smiles
+    :param id_name: str, the column name of the id
     """
     # file name
     _, basename = os.path.split(os.path.abspath(smiles_filename))
@@ -233,8 +233,8 @@ class Molecule(object):
     def generate_3d_molecule(self, addH = True, plot2D = True):
         """
         Generate .xyz file of the molecule. If addH == True, optimize molecule with the MMFF94 force field
-        :para addH: bool, whether or not to add H atoms and optimize the MMFF94 force field
-        :para plot2D: bool, whether or not to plot 2D structure
+        :param addH: bool, whether or not to add H atoms and optimize the MMFF94 force field
+        :param plot2D: bool, whether or not to plot 2D structure
         :return: None
         """
         if self.smiles is None:
@@ -289,8 +289,8 @@ class Molecule(object):
     def read_smiles(self, input_filename, cleanup = False):
         """
         read smiles from file
-        :para input_filename: str, file name
-        :para cleanup: bool, whether to clean up smiles using chembl_structure_pipeline
+        :param input_filename: str, file name
+        :param cleanup: bool, whether to clean up smiles using chembl_structure_pipeline
         :return: str, smiles or cleaned smiles according to 'cleanup'
         """  
         # file name
@@ -324,7 +324,7 @@ class Molecule(object):
     def write_xyz(self, output_filename = None):
         """
         Output .xyz file
-        :para output_filename: str, output file name
+        :param output_filename: str, output file name
         """        
         if len(self.xyz) <= 0:
             print('xyz is empty')

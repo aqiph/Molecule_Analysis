@@ -28,8 +28,8 @@ from utils.molecular_description import get_fingerprint, cal_fingerprint_distanc
 def cal_num_scaffold(input_file, smiles_column_name = 'SMILES'):
     """
     calculate the number of scaffolds in the given library
-    :para input_file: str, the filename of the input file
-    :para smiles_column_name: str, the name of the SMILES column
+    :param input_file: str, the filename of the input file
+    :param smiles_column_name: str, the name of the SMILES column
     """
     # output file path without extension
     output_file, fmt = os.path.splitext(os.path.abspath(input_file))
@@ -64,9 +64,9 @@ def plot_distance_distribution_by_fingerprint(input_file, smiles_column_name = '
     """
     calculate the distance between every pair of SMILES, based on fingerprint
     plot the distribution of the distance
-    :para input_file: str, the filename of the input file
-    :para smiles_column_name: str, the name of the SMILES column
-    :para fp_method: str, method to compute fingerprint (topology: topological fingerprint;
+    :param input_file: str, the filename of the input file
+    :param smiles_column_name: str, the name of the SMILES column
+    :param fp_method: str, method to compute fingerprint (topology: topological fingerprint;
                                                          maccs: MACCS fingerprint;
                                                          atomPairs: atom pairs;
                                                          torsions: topological torsions;
