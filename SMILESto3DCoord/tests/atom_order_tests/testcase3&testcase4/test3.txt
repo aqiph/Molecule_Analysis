@@ -1,1 +1,0 @@
-c1([C@H](C)CC)cccc2ccccc12

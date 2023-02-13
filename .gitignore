@@ -13,3 +13,9 @@ __pycache__/
 # Jupter
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
+
+# Others
+cluster_analysis/tests/
+diversity_analysis/tests/
+process_SMILES/tests/
+SMILESto3DCoord/tests/
