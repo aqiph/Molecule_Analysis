@@ -18,13 +18,14 @@ from rdkit.Chem.AtomPairs import Pairs
 from rdkit.Chem.AtomPairs import Torsions
 from rdkit.Chem.rdMolDescriptors import GetMorganFingerprintAsBitVect
 from rdkit.Chem.Scaffolds import MurckoScaffold
+from rdkit.Chem import rdFMCS
 # from mhfp.encoder import MHFPEncoder
 
 
 
 def get_fingerprint(smiles, fp_method = 'ecfp4'):
     """
-    compute the fingerprint of the input smiles
+    Compute the fingerprint of the input smiles
     :param smiles: str, input SMILES
     :param fp_method: str, method to compute fingerprint (topology: topological fingerprint;
                                                          maccs: MACCS fingerprint;
@@ -49,7 +50,6 @@ def get_fingerprint(smiles, fp_method = 'ecfp4'):
         return None
     
     # calculate fingerprint
-    fp = None
     fp_method = fp_method.lower()
     
     if fp_method == 'topology':
@@ -75,7 +75,7 @@ def get_fingerprint(smiles, fp_method = 'ecfp4'):
 
 def cal_fingerprint_distance(fp_1, fp_2, fp_method = 'ecfp4'):
     """
-    use Tanimoto/Jaccard algorithm to compute distance between fp_1 and fp2: 
+    Use Tanimoto/Jaccard algorithm to compute distance between fp_1 and fp2:
     similarity = #(common feature)/len(fp), distance = 1 - similarity
     :param fp_1: fingerprint for molecule_1
     :param fp_2: fingerprint for molecule_2
@@ -108,7 +108,7 @@ def cal_fingerprint_distance(fp_1, fp_2, fp_method = 'ecfp4'):
 
 def get_scaffold(smiles, include_chirality = False, generic = False):
     """
-    compute the Bemis-Murcko scaffold for a SMILES string
+    Compute the Bemis-Murcko scaffold for a SMILES string
     :param smiles: str, input SMILES
     :param include_chirality: bool, whether or not using chirality
     :param generic: bool, whether or not make the scaffold generic
@@ -138,27 +138,39 @@ def get_scaffold(smiles, include_chirality = False, generic = False):
     return scaffold_smiles
 
 
+def cal_MCS(smiles_1, smiles_2):
+    """
+    Compute the Maximum Common Sub-structure between two SMILES
+    MCS similarity is defined as Jaccard score on heavy atoms, using the MCS as intersection.
+    More details at https://www.rdkit.org/docs/source/rdkit.Chem.MCS.html
+    :param smiles_1: str, SMILES for molecule 1
+    :param smiles_2: str, SMILES for molecule 2
+    """
+    # check if SMILES is valid
+    if (not smiles_1) or (not smiles_2):
+        print(f"Error: Invalid SMILES")
+        return 0
+    try:
+        mol_1 = Chem.MolFromSmiles(smiles_1)
+        mol_2 = Chem.MolFromSmiles(smiles_2)
+    except Exception:
+        print(f"Error: Invalid SMILES")
+        return 0
+    if (not mol_1) or (not mol_2):
+        print(f"Error: Invalid SMILES")
+        return 0
+
+    # compute MCS
+    mcs = rdFMCS.FindMCS([mol_1, mol_2], completeRingsOnly=True, timeout=1)
+    similarity = float(mcs.numAtoms) / (mol_1.GetNumHeavyAtoms() + mol_1.GetNumHeavyAtoms() - mcs.numAtoms)
+
+    return similarity
+
+
+
 
 if __name__ == '__main__':
-    
-    ### test get_fingerprint
-    # smiles = 'Cc1cc(Oc2nccc(CCC)c2)ccc1'
-    # smiles = ''
-    # plot_2d_molecule_from_smiles(smiles, output_file_without_ext = 'original', legend = smiles, atomNumber = None)
-    # print(get_fingerprint(smiles, fp_method = 'MHFP6'))
-    
-    ### test cal_fingerprint_distance
-    smiles_1 = 'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C'
-    smiles_2 = 'CCCC1=NN(C2=C1NC(=NC2=O)C3=C(C=CC(=C3)S(=O)(=O)N4CCN(CC4)C)OCC)C'
-    # smiles_1 = 'CCO'
-    # smiles_2 = 'h'
 
-    for fp_method in ['topology', 'maccs', 'atompairs', 'torsions', 'ecfp4', 'fcfp4']:
-        fp_1 = get_fingerprint(smiles_1, fp_method = fp_method)
-        fp_2 = get_fingerprint(smiles_2, fp_method = fp_method)
-        print(fp_method, cal_fingerprint_distance(fp_1, fp_2, fp_method = fp_method))
-    
-    ### test get_scaffold
     # import sys
     #
     # path_list = sys.path
@@ -168,7 +180,28 @@ if __name__ == '__main__':
     #     print('Add module path')
     #
     # from process_SMILES import plot_2d_molecule_from_smiles
-    #
+
+
+    ### test get_fingerprint
+    # smiles = 'Cc1cc(Oc2nccc(CCC)c2)ccc1'
+    # smiles = ''
+    # plot_2d_molecule_from_smiles(smiles, output_file_without_ext = 'original', legend = smiles, atomNumber = None)
+    # print(get_fingerprint(smiles, fp_method = 'MHFP6'))
+
+
+    ### test cal_fingerprint_distance
+    # smiles_1 = 'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C'
+    # smiles_2 = 'CCCC1=NN(C2=C1NC(=NC2=O)C3=C(C=CC(=C3)S(=O)(=O)N4CCN(CC4)C)OCC)C'
+    # smiles_1 = 'CCO'
+    # smiles_2 = 'h'
+
+    # for fp_method in ['topology', 'maccs', 'atompairs', 'torsions', 'ecfp4', 'fcfp4']:
+    #     fp_1 = get_fingerprint(smiles_1, fp_method = fp_method)
+    #     fp_2 = get_fingerprint(smiles_2, fp_method = fp_method)
+    #     print(fp_method, cal_fingerprint_distance(fp_1, fp_2, fp_method = fp_method))
+
+
+    ### test get_scaffold
     # smiles_1 = 'CCOC(=O)N1CCN(CC1)C1=CC=CC=C1NS(=O)(=O)C1=CC=C(C=C1)S(=O)(=O)N(C)C'
     # smiles_2 = 'COC(C)(C)C(=O)N1CCN(CC1)C1=C(NS(=O)(=O)C2=CC=C(C=C2)S(=O)(=O)N(C)C)C=CC=C1'
     #
@@ -181,3 +214,11 @@ if __name__ == '__main__':
     # plot_2d_molecule_from_smiles(scaffold_smiles_1, output_file_without_ext = 'smiles_1', legend = 'smiles_1', atomNumber = None)
     # plot_2d_molecule_from_smiles(scaffold_smiles_2, output_file_without_ext = 'smiles_2', legend = 'smiles_2', atomNumber = None)
     #
+
+
+    ### test cal_MCS
+    smiles_1 = 'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C'
+    # smiles_2 = 'CCCC1=NN(C2=C1NC(=NC2=O)C3=C(C=CC(=C3)S(=O)(=O)N4CCN(CC4)C)OCC)C'
+    smiles_2 = 'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C'
+    smiles_2 = ''
+    print(cal_MCS(smiles_1, smiles_2))

@@ -17,5 +17,6 @@ __pycache__/
 # Others
 cluster_analysis/tests/
 diversity_analysis/tests/
-process_SMILES/tests/
+SMILES_processing/tests/
 SMILESto3DCoord/tests/
+similarity_search/tests/

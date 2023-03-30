@@ -470,8 +470,8 @@ if __name__ == '__main__':
         ############################################
         ### process one smile from an input file ###
         ############################################
-        input_file = 'process_SMILES/tests/test.txt'
-        smiles, id = process_single_SMILES(input_file, cleanup_SMILES = True, cleanup_chirality = False,
+        input_file = 'SMILES_processing/tests/test.txt'
+        smiles, id = process_single_SMILES(input_file, cleanup_SMILES = False, cleanup_chirality = False,
                                            process_disconnection = False, process_disconnection_method = 'keep_most_atoms',
                                            addH = False, plot2D = True, legend = 'SMILES')
 
@@ -495,7 +495,7 @@ if __name__ == '__main__':
         ##########################################
         ### process multiple smiles from file ####
         ##########################################
-        input_file = 'process_SMILES/tests/test.csv'
+        input_file = 'SMILES_processing/tests/test.csv'
         smiles_column_name = 'SMILES'
         id_column_name = 'ID'
 
