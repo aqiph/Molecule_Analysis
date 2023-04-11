@@ -15,6 +15,7 @@ import pandas as pd
 from rdkit import Chem
 
 from utils.molecular_description import get_fingerprint, cal_fingerprint_distance, cal_MCS
+from utils.tools import remove_unnamed_columns
 
 
 
@@ -149,21 +150,19 @@ def main(input_file, smiles_column_name, smiles_ref, method, similarity_cutoff=0
     df_sim['MCS_Score'] = df_sim[smiles_column_name].apply(lambda smiles: cal_MCS(smiles, smiles_ref))
 
     # write to file
+    df_sim = df_sim.reset_index(drop=True)
     print('Number of rows:', df_sim.shape[0])
+    df_sim = remove_unnamed_columns(df_sim)
     df_sim.to_csv(output_file + f'_{df_sim.shape[0]}.csv')
 
 
 
 if __name__ == '__main__':
 
-    # input_file = 'similarity_search/tests/library.csv'
-    # smiles_column_name = 'smiles'
-    # smiles_ref = 'CC1=CC=C(C=C1)C'
-
-    input_file = 'similarity_search/tests/HTS_forGNN_446663.csv'
+    input_file = 'similarity_search/tests/library.csv'
     smiles_column_name = 'Cleaned_SMILES'
-    smiles_ref = 'N=C(N)c1ccc2cc(C(NS(=O)(=O)c3ccc(C(F)(F)F)cc3)C(=O)O)ccc2c1'
+    smiles_ref = 'NC(=O)SCC(=O)Nc1ccc(S(N)(=O)=O)cc1'
     method = 'substructure'
-    output_file = 'cmpd_1642.csv'
+    output_file = 'cmpd_7489.csv'
     main(input_file, smiles_column_name, smiles_ref, method, similarity_cutoff=0.5, output_file=output_file, output_option='selected')
 

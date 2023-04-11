@@ -16,6 +16,7 @@ import argparse
 
 from utils.clustering import clustering_by_fingerprint, clustering_by_scaffold
 from utils.nearest_neighbor import nearest_neighbor_by_fingerprint
+from utils.tools import remove_unnamed_columns
 
 
 def cluster_analysis(args):
@@ -24,7 +25,7 @@ def cluster_analysis(args):
     based on fingerprint or scaffold
     """
     # read files
-    df = pd.read_csv(args.input_file, index_col = 0)
+    df = pd.read_csv(args.input_file)
     
     # output name
     output_file_without_ext = os.path.splitext(os.path.abspath(args.input_file))[0]
@@ -47,8 +48,8 @@ def cluster_analysis(args):
     
     # write to file
     df = df.reset_index(drop = True)
-    
     print('Number of rows:', df.shape[0])
+    df = remove_unnamed_columns(df)
     df.to_csv(output_file)
 
 
@@ -60,8 +61,8 @@ def nearest_neighbor_analysis(args):
     the candidate molecule is considered as a neighbor of centroid molecule
     """
     # read files
-    df_centroid = pd.read_csv(args.input_file_centroid, index_col = 0)
-    df_candidate = pd.read_csv(args.input_file, index_col = 0)
+    df_centroid = pd.read_csv(args.input_file_centroid)
+    df_candidate = pd.read_csv(args.input_file)
     
     # output name
     output_file_without_ext = os.path.splitext(os.path.abspath(args.input_file))[0]
@@ -82,8 +83,8 @@ def nearest_neighbor_analysis(args):
     
     # write to file
     df_candidate = df_candidate.reset_index(drop = True)
-    
     print('Number of rows:', df_candidate.shape[0])
+    df_candidate = remove_unnamed_columns(df_candidate)
     df_candidate.to_csv(output_file)
     
 

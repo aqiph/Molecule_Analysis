@@ -20,6 +20,7 @@ font = FontProperties()
 font.set_size(12)
 
 from utils.molecular_description import get_fingerprint, cal_fingerprint_distance, get_scaffold
+from utils.tools import remove_unnamed_columns
 
 
 
@@ -55,6 +56,7 @@ def cal_num_scaffold(input_file, smiles_column_name = 'SMILES'):
     # write to file
     df_scaffold = df_scaffold.reset_index(drop=True)
     print('Number scaffolds:', df_scaffold.shape[0])
+    df_scaffold = remove_unnamed_columns(df_scaffold)
     df_scaffold.to_csv('{}_scaffold.csv'.format(output_file))
 
 
