@@ -162,7 +162,7 @@ def cal_MCS(smiles_1, smiles_2):
 
     # compute MCS
     mcs = rdFMCS.FindMCS([mol_1, mol_2], completeRingsOnly=True, timeout=1)
-    similarity = float(mcs.numAtoms) / (mol_1.GetNumHeavyAtoms() + mol_1.GetNumHeavyAtoms() - mcs.numAtoms)
+    similarity = float(mcs.numAtoms) / (mol_1.GetNumHeavyAtoms() + mol_2.GetNumHeavyAtoms() - mcs.numAtoms)
 
     return similarity
 
