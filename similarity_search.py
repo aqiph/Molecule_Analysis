@@ -150,6 +150,7 @@ def main(input_file, smiles_column_name, smiles_ref, method, similarity_cutoff=0
     df_sim['MCS_Score'] = df_sim[smiles_column_name].apply(lambda smiles: cal_MCS(smiles, smiles_ref))
 
     # write to file
+    df_sim.sort_values(by=['MCS_Score'], ascending=False, inplace=True)
     df_sim = df_sim.reset_index(drop=True)
     print('Number of rows:', df_sim.shape[0])
     df_sim = remove_unnamed_columns(df_sim)
@@ -159,10 +160,13 @@ def main(input_file, smiles_column_name, smiles_ref, method, similarity_cutoff=0
 
 if __name__ == '__main__':
 
-    input_file = 'similarity_search/tests/library.csv'
+    # input_file = 'similarity_search/tests/library.csv'
+    input_file = 'similarity_search/tests/HTS_forGNN_446663.csv'
+    # input_file = 'similarity_search/tests/HTS_Expresspick-Pfizer_forGNN_4208.csv'
     smiles_column_name = 'Cleaned_SMILES'
     smiles_ref = 'NC(=O)SCC(=O)Nc1ccc(S(N)(=O)=O)cc1'
-    method = 'substructure'
-    output_file = 'cmpd_7489.csv'
-    main(input_file, smiles_column_name, smiles_ref, method, similarity_cutoff=0.5, output_file=output_file, output_option='selected')
+    # smiles_ref = 'O=C(NCc1ccc(F)cc1)c1cccc(Nc2ccc(-c3ccccc3)nn2)c1'
+    method = 'mcs'
+    output_file = 'output.csv'
+    main(input_file, smiles_column_name, smiles_ref, method, similarity_cutoff=0.6, output_file=output_file, output_option='selected')
 

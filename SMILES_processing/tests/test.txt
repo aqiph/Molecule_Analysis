@@ -1,1 +1,1 @@
-NS(=O)(=O)c1ccc(NC(=O)c2ccccc2)cc1
+CCc1[nH]c(=N)[nH]c(=N)c1-c1ccc2c3ccccc3n(CC[CH3+])c2c1

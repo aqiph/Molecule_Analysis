@@ -17,6 +17,7 @@ import os, warnings
 import numpy as np
 import pandas as pd
 import pickle
+from rdkit import Chem
 from rdkit.Chem.SaltRemover import SaltRemover
 from rdkit.Chem.Draw import rdMolDraw2D
 from chembl_structure_pipeline import *
@@ -118,6 +119,7 @@ def process_single_SMILES(input_file, cleanup_SMILES = True, cleanup_chirality =
                                 process_disconnection = process_disconnection, process_disconnection_method = process_disconnection_method,
                                 addH = addH, plot2D = plot2D, legend = legend)
         
+    print(smiles)
     return smiles, id
 
 
@@ -471,7 +473,7 @@ if __name__ == '__main__':
         ### process one smile from an input file ###
         ############################################
         input_file = 'SMILES_processing/tests/test.txt'
-        smiles, id = process_single_SMILES(input_file, cleanup_SMILES = False, cleanup_chirality = False,
+        smiles, id = process_single_SMILES(input_file, cleanup_SMILES = True, cleanup_chirality = False,
                                            process_disconnection = False, process_disconnection_method = 'keep_most_atoms',
                                            addH = False, plot2D = True, legend = 'SMILES')
 
