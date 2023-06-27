@@ -11,37 +11,44 @@ Created on Mon Nov  8 17:00:16 2021
 """
 
 import os
-import pandas as pd
 import argparse
+import pandas as pd
 
-from utils.clustering import clustering_by_fingerprint, clustering_by_scaffold
-from utils.nearest_neighbor import nearest_neighbor_by_fingerprint
+from utils.clustering import fingerprint_based_clustering, mcs_based_clustering, scaffold_based_clustering
 from utils.tools import remove_unnamed_columns
 
 
-def cluster_analysis(args):
+def main(args):
     """
     group compounds in the args.input_file into clusters,
     based on fingerprint or scaffold
     """
     # read files
-    df = pd.read_csv(args.input_file)
+    input_file = os.path.abspath(args.input_file)
+    df = pd.read_csv(input_file)
     
-    # output name
-    output_file_without_ext = os.path.splitext(os.path.abspath(args.input_file))[0]
-    output_file = output_file_without_ext + '_cluster.csv'
+    # output file
+    output_file_without_ext = os.path.splitext(input_file)[0]
+    output_file = output_file_without_ext + '_clustered.csv'
+    lprint = args.lprint
     
     # clustering
-    smiles_list = df['Cleaned_SMILES'].values.tolist()
+    smiles_list = df[args.smiles_column_name].values.tolist()
     
     if args.cluster_method == 'fingerprint':
         fp_method = args.fingerprint_method
         cluster_threshold = args.cluster_threshold
-        
-        labels = clustering_by_fingerprint(smiles_list, fp_method, cluster_threshold, output_type = 'labels')
+        labels = fingerprint_based_clustering(smiles_list, fp_method, cluster_threshold, lprint)
+
+    elif args.cluster_method == 'mcs':
+        cluster_threshold = args.cluster_threshold
+        labels = mcs_based_clustering(smiles_list, cluster_threshold, lprint)
         
     elif args.cluster_method == 'scaffold':
-        labels = clustering_by_scaffold(smiles_list, output_type = 'labels')
+        labels = scaffold_based_clustering(smiles_list, lprint)
+
+    else:
+        raise Exception('Error: Invalid cluster method.')
     
     # add cluster labels
     df['Cluster_label'] = labels
@@ -51,41 +58,6 @@ def cluster_analysis(args):
     print('Number of rows:', df.shape[0])
     df = remove_unnamed_columns(df)
     df.to_csv(output_file)
-
-
-def nearest_neighbor_analysis(args):
-    """
-    determine whether a molecule in df_candidate is a neighbor of molecules in df_centroid,
-    based on fingerprint with method 'fp_method'.
-    if the similarity is larger than neighbor_threshold,
-    the candidate molecule is considered as a neighbor of centroid molecule
-    """
-    # read files
-    df_centroid = pd.read_csv(args.input_file_centroid)
-    df_candidate = pd.read_csv(args.input_file)
-    
-    # output name
-    output_file_without_ext = os.path.splitext(os.path.abspath(args.input_file))[0]
-    output_file = output_file_without_ext + '_neighbor.csv'
-    
-    centroid_smiles_list = df_centroid['Cleaned_SMILES'].values.tolist()
-    candidate_smiles_list = df_candidate['Cleaned_SMILES'].values.tolist()
-    
-    # determine whether a candidate molecule is a neighbor of centroid molecules
-    fp_method = args.fingerprint_method
-    neighbor_threshold = float(args.neighbor_threshold)
-    
-    labels = nearest_neighbor_by_fingerprint(centroid_smiles_list, candidate_smiles_list, fp_method, neighbor_threshold)
-    labels = [int(label) for label in labels]
-    
-    # add cluster labels
-    df_candidate['Cluster_label'] = labels
-    
-    # write to file
-    df_candidate = df_candidate.reset_index(drop = True)
-    print('Number of rows:', df_candidate.shape[0])
-    df_candidate = remove_unnamed_columns(df_candidate)
-    df_candidate.to_csv(output_file)
     
 
 def get_parser():
@@ -94,13 +66,13 @@ def get_parser():
     """
     argparser = argparse.ArgumentParser()
     
-    argparser.add_argument('-input_file', default = 'cluster_analysis/tests/examples.csv', help = 'Input file name')
-    argparser.add_argument('-input_file_centroid', default = 'cluster_analysis/tests/examples_centroid.csv', help = 'Input file name for centroid data points')
-    
-    argparser.add_argument('-cluster_method', default = 'fingerprint', help = 'The method to cluster compound', type = str)
-    argparser.add_argument('-fingerprint_method', default = 'ecfp4', help = 'The method to calculate fingerprint', type = str)
-    argparser.add_argument('-cluster_threshold', default = 0.5, help = 'The similarity threshold for clustering', type = float)
-    argparser.add_argument('-neighbor_threshold', default = 0.5, help = 'The similarity thresohld for defining nearest neighbor data points')
+    argparser.add_argument('--input_file', default='examples.csv', type=str, help='Path of the input file.')
+    argparser.add_argument('--smiles_column_name', default='Cleaned_SMILES', type=str, help='Name of the SMILES column.')
+    argparser.add_argument('--lprint', default=False, action='store_true', help='Include this flag to enable printing distance matrix or scaffold.')
+
+    argparser.add_argument('--cluster_method', default='fingerprint', type=str, help='The method to cluster compound.')
+    argparser.add_argument('--fingerprint_method', default='ecfp4', type=str, help='The method to calculate fingerprint.')
+    argparser.add_argument('--cluster_threshold', default=0.7, type=float, help='The similarity threshold for clustering.')
 
     args = argparser.parse_args()
     return args
@@ -110,9 +82,7 @@ def get_parser():
 if __name__ == '__main__':
     
     args = get_parser()
-    
-    # cluster_analysis(args)
-    nearest_neighbor_analysis(args)
+    main(args)
     
     
     
