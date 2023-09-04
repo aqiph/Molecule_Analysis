@@ -12,6 +12,7 @@ Created on Thu Nov  4 13:33:55 2021
 """
 
 import sys
+import numpy as np
 
 path_list = sys.path
 module_path = '/Users/guohan/Documents/Codes/Molecule_Analysis/utils'
@@ -20,6 +21,7 @@ if module_path not in sys.path:
     print('Add module path')
 import numpy as np
 import pandas as pd
+import heapq
 from sklearn.cluster import DBSCAN
 from molecular_description import get_fingerprint, cal_fingerprint_distance, cal_MCS, get_scaffold
 
@@ -227,6 +229,39 @@ def scaffold_based_clustering(smiles_list, lprint = False):
     return labels
 
 
+### Selecting representative compound ###
+
+def find_representative(smiles_list, representative_method, counts = 1):
+    """
+    extract the representative molecules from a given SMILES list
+    :param smiles_list: list, input SMILES list
+    :param representative_method: str, method for finding representative compounds
+    :param counts: int, number of representative compounds
+    """
+    num = len(smiles_list)
+    assert num >= 1, 'Error: Invalid length of SMILES list'
+
+    if representative_method == 'random':
+        indices = np.random.choice(np.arange(num), counts, replace=False)
+        return indices
+
+    elif representative_method == 'fingerprint':
+        dist_matrix = get_fingerprint_dist_matrix(smiles_list, fp_method = 'ecfp4')
+
+    elif representative_method == 'mcs':
+        dist_matrix = get_mcs_dist_matrix(smiles_list)
+
+    else:
+        raise Exception('Error: Invalid method for extracting representative molecule.')
+
+    dist_list = np.mean(dist_matrix, axis = 1)
+    index_dist = list(enumerate(dist_list))
+    smallest_pairs = heapq.nsmallest(counts, index_dist, key=lambda element: element[1])
+    smallest_indices, smallest_dist = zip(*smallest_pairs)
+
+    return list(smallest_indices)
+
+
 
 if __name__ == '__main__':
     
@@ -235,18 +270,24 @@ if __name__ == '__main__':
                    'CCCC1=NN(C2=C1NC(=NC2=O)C3=C(C=CC(=C3)S(=O)(=O)N4CCN(CC4)C)OCC)C']   
     
     print('*************************')
-    print('Clustering based on fingerprint')
-    clusters = fingerprint_based_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold = 0.5, lprint = False)
-    print(clusters)
+    # print('Clustering based on fingerprint')
+    # clusters = fingerprint_based_clustering(smiles_list, fp_method = 'ecfp4', cluster_threshold = 0.5, lprint = False)
+    # print(clusters)
 
     print('*************************')
-    print('Clustering based on MCS')
-    clusters = mcs_based_clustering(smiles_list, cluster_threshold=0.5, lprint=False)
-    print(clusters)
+    # print('Clustering based on MCS')
+    # clusters = mcs_based_clustering(smiles_list, cluster_threshold=0.5, lprint=False)
+    # print(clusters)
     
     print('*************************')
-    print('Clustering based on scaffold')
-    clusters = scaffold_based_clustering(smiles_list, lprint = False)
-    print(clusters)
+    # print('Clustering based on scaffold')
+    # clusters = scaffold_based_clustering(smiles_list, lprint = False)
+    # print(clusters)
+
     print('*************************')
+    print('Extract representative smiles')
+    id_list = ['ID_0', 'ID_1', 'ID_2', 'ID_3', 'ID_4', 'ID_5', 'ID_6', 'ID_7']
+    print(find_representative(smiles_list, representative_method='random', counts=3))
+
+
     
