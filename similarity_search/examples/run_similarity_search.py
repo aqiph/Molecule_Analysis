@@ -42,8 +42,9 @@ def run_multiple_similarity_search(input_file_library, input_file_ref, id_column
         smiles_column_name = 'Cleaned_SMILES'
         smiles_ref = SMILES[i]
         print(f'Start: {id} {smiles_ref}')
-        output_file = f'{dir_analogs}/{id}.csv'
-        main(input_file_library, smiles_column_name, smiles_ref, method, output_file, similarity_cutoff=similarity_cutoff, output_option='selected')
+        output_folder = dir_analogs
+        output_file = f'{id}.csv'
+        main(input_file_library, smiles_column_name, smiles_ref, method, similarity_cutoff=similarity_cutoff, output_folder=output_folder, output_file=output_file, output_option='selected')
         end_time = time.time()
         elapsed_time = end_time - start_time
         total_time.append(elapsed_time)
@@ -113,15 +114,15 @@ def plot_distribution(input_file):
 
 
 if __name__ == '__main__':
-    # input_file_library = 'library.csv'
-    input_file_library = 'HTS_forGNN_446663.csv'
+    input_file_library = 'library.csv'
+    # input_file_library = '/Users/guohan/Documents/Projects/Datasets/HTS/Combination/forGNN/HTS_forGNN_446663.csv'
 
     input_file_ref = 'reference_cmps.csv'
     id_column_name_ref = 'ID'
     smiles_column_name_ref = 'Cleaned_SMILES'
 
-    method = 'fingerprint'
+    method = 'mcs'
     similarity_cutoff = 0.3
-    dir_analogs = 'HTS_FP0.3'
+    dir_analogs = 'library_FP0.3'
     run_multiple_similarity_search(input_file_library, input_file_ref, id_column_name_ref, smiles_column_name_ref,
                                    method, similarity_cutoff, dir_analogs)

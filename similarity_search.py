@@ -127,7 +127,7 @@ def similarity_search_single_ref(df, smiles_column_name, smiles_ref, method, **k
     return df
 
 
-def main(input_file, smiles_column_name, smiles_ref, method, output_file = None, **kwargs):
+def main(input_file, smiles_column_name, smiles_ref, method, **kwargs):
     """
     Determine whether SMILES in input file is similar to the reference SMILES.
     Allowed methods include fingerprint, Maximum Common Structure (mcs), and substructure.
@@ -136,9 +136,10 @@ def main(input_file, smiles_column_name, smiles_ref, method, output_file = None,
     :param smiles_ref: str, reference SMILES
     :param method: str, method for similarity search, allowed values include 'fingerprint', 'mcs' and 'substructure'.
     The method 'substructure' will select compounds that contain the given substructure.
-    :param output_file: str, name of the output file
     :param similarity_cutoff: float, similarity cutoff for 'fingerprint' and 'mcs' method.
     :param substructure_method: str, method used to convert smiles_ref to mol_ref, allowed values include 'SMILES', 'SMARTS'
+    :param output_folder: str, path of the output file
+    :param output_file: str, name of the output file
     :param output_option: str, options to output data, allowed values include 'selected', 'not_selected' and 'all'
     """
     # read df
@@ -147,10 +148,13 @@ def main(input_file, smiles_column_name, smiles_ref, method, output_file = None,
     assert smiles_column_name in COLUMNS, 'Error: Invalid input SMILES column name.'
 
     # output file
-    folder, basename = os.path.split(os.path.abspath(input_file))
-    if output_file is None:
-        output_file = basename
-    output_file = os.path.join(folder, os.path.splitext(output_file)[0])
+    folder = kwargs.get('output_folder', os.getcwd())
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+        print(f'Fold {folder} created.')
+    output_file = kwargs.get('output_file', input_file)
+    output_file = os.path.splitext(os.path.split(output_file)[1])[0]
+    output_file = os.path.join(folder, output_file)
     output_option = kwargs.get('output_option', 'selected')
 
     # similarity search
@@ -175,17 +179,18 @@ def main(input_file, smiles_column_name, smiles_ref, method, output_file = None,
 
 if __name__ == '__main__':
 
-    # input_file = 'similarity_search/tests/library.csv'
-    # input_file = 'similarity_search/tests/HTS_forGNN_446663.csv'
-    # smiles_column_name = 'Cleaned_SMILES'
-    # smiles_ref = 'c1ccccc1'
-    # output_file = 'output.csv'
+    input_file = 'similarity_search/tests/library.csv'
+    # input_file = '/Users/guohan/Documents/Projects/Datasets/HTS/Combination/forGNN/HTS_forGNN_446663.csv'
+    smiles_column_name = 'Cleaned_SMILES'
+    smiles_ref = 'c1ccccc1'
+    output_file = 'output.csv'
+    output_folder = 'similarity_search_results'
     ### Method: 'fingerprint' ###
-    # main(input_file, smiles_column_name, smiles_ref, method='fingerprint', output_file=output_file, similarity_cutoff=0.3, output_option='all')
+    main(input_file, smiles_column_name, smiles_ref, method='fingerprint', similarity_cutoff=0.3, output_folder=output_folder, output_file=output_file, output_option='all')
     ### Method: 'mcs' ###
-    # main(input_file, smiles_column_name, smiles_ref, method='mcs', output_file=output_file, similarity_cutoff=0.3, output_option='all')
+    # main(input_file, smiles_column_name, smiles_ref, method='mcs', similarity_cutoff=0.3, output_folder=output_folder, output_file=output_file, output_option='all')
     ### Method: 'substructure' ###
-    # main(input_file, smiles_column_name, smiles_ref, method='substructure', output_file=output_file, substructure_method='SMARTS', output_option='all')
+    # main(input_file, smiles_column_name, smiles_ref, method='substructure', substructure_method='SMARTS', output_folder=output_folder, output_file=output_file, output_option='all')
 
 
     ### Tests ###
@@ -225,7 +230,7 @@ if __name__ == '__main__':
 
 
 
-    print(is_similar_by_substructure(smiles, smiles_ref, substructure_method='SMARTS'))
+    # print(is_similar_by_substructure(smiles, smiles_ref, substructure_method='SMARTS'))
 
 
 

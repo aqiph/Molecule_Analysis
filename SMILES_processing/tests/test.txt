@@ -1,1 +1,1 @@
-Cc1ccc(cc1)-c1csc(NC(=O)CSc2nnc3cc(C)c4ccccc4n23)n1
+O=C([C@@H](NC([C@@H](NC(CN1N=NN=C1)=S)C(C)C)=S)CC2=CCC3=C2C=CC=N3)O
