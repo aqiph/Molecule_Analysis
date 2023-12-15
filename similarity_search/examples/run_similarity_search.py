@@ -24,7 +24,7 @@ from utils.tools import remove_unnamed_columns
 
 
 def run_multiple_similarity_search(input_file_library, input_file_ref, id_column_name_ref, smiles_column_name_ref,
-                                   method, similarity_cutoff, dir_analogs):
+                                   method, similarity_cutoff, analogs_dir):
     """
     Perform similarity search for multiple SMILES from 'input_file_ref'
     """
@@ -42,9 +42,9 @@ def run_multiple_similarity_search(input_file_library, input_file_ref, id_column
         smiles_column_name = 'Cleaned_SMILES'
         smiles_ref = SMILES[i]
         print(f'Start: {id} {smiles_ref}')
-        output_folder = dir_analogs
+        output_folder = analogs_dir
         output_file = f'{id}.csv'
-        main(input_file_library, smiles_column_name, smiles_ref, method, similarity_cutoff=similarity_cutoff, output_folder=output_folder, output_file=output_file, output_option='selected')
+        main(input_file_library, smiles_column_name, smiles_ref, method, similarity_cutoff=similarity_cutoff, output_folder=output_folder, output_file=output_file, output_option='satisfied')
         end_time = time.time()
         elapsed_time = end_time - start_time
         total_time.append(elapsed_time)
@@ -52,11 +52,11 @@ def run_multiple_similarity_search(input_file_library, input_file_ref, id_column
     print(f'Mean time is {np.mean(np.array(total_time))}, std is {np.std(np.array(total_time))}')
 
 
-def get_best_score(input_file, dir_analogs, n=0):
+def get_best_score(input_file, analogs_dir, n=0):
     """
     Get the top-n most similar compound
     :param input_file: str, path of the file containing reference compounds
-    :param dir_analogs: str, path of the folder containing analogs
+    :param analogs_dir: str, path of the folder containing analogs
     :param n: int, indicate the top-n most similar analog
     """
     # output file
@@ -65,7 +65,7 @@ def get_best_score(input_file, dir_analogs, n=0):
     df = pd.read_csv(input_file)
     df_bestScore = pd.DataFrame(df, columns = ['ID', 'SMILES', 'Cleaned_SMILES'])
 
-    df_bestScore['Analog'] = df_bestScore['ID'].apply(lambda cmp: get_analog(cmp, dir_analogs, n))
+    df_bestScore['Analog'] = df_bestScore['ID'].apply(lambda cmp: get_analog(cmp, analogs_dir, n))
     df_bestScore[['Analog_ID', 'Analog_SMILES', 'Analog_Cleaned_SMILES', 'Similarity_Score']] = \
         pd.DataFrame(df_bestScore['Analog'].tolist())
     COLUMNS = ['ID', 'SMILES', 'Cleaned_SMILES', 'Analog_ID', 'Analog_SMILES', 'Analog_Cleaned_SMILES', 'Similarity_Score']
@@ -77,10 +77,10 @@ def get_best_score(input_file, dir_analogs, n=0):
     df_bestScore.to_csv(f'{output_file}_Top{n+1}_{df_bestScore.shape[0]}.csv')
 
 
-def get_analog(cmp, dir_analogs, n):
-    files = os.listdir(dir_analogs)
+def get_analog(cmp, analogs_dir, n):
+    files = os.listdir(analogs_dir)
     filtered_files = [file for file in files if file.startswith(f'{cmp}_')]
-    df_cmp = pd.read_csv(f'{dir_analogs}/{filtered_files[0]}')
+    df_cmp = pd.read_csv(f'{analogs_dir}/{filtered_files[0]}')
 
     if df_cmp.shape[0] <= n:
         return ['', '', '', 0.0]
@@ -123,6 +123,6 @@ if __name__ == '__main__':
 
     method = 'mcs'
     similarity_cutoff = 0.3
-    dir_analogs = 'library_FP0.3'
+    analogs_dir = 'library_FP0.3'
     run_multiple_similarity_search(input_file_library, input_file_ref, id_column_name_ref, smiles_column_name_ref,
-                                   method, similarity_cutoff, dir_analogs)
+                                   method, similarity_cutoff, analogs_dir)

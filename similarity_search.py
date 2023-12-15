@@ -73,7 +73,7 @@ def is_similar_by_substructure(smiles, smiles_ref, substructure_method='SMILES')
         mol_ref = Chem.MolFromSmiles(smiles_ref)
     elif substructure_method == 'SMARTS':
         smiles_ref = Chem.MolToSmiles(Chem.MolFromSmiles(smiles_ref))   # Kekulize molecule before get mol as a pattern
-        print(smiles_ref)
+        # print(smiles_ref)
         mol_ref = Chem.MolFromSmarts(smiles_ref)
     else:
         raise Exception('Error: Invalid substructure method.')
@@ -140,7 +140,7 @@ def main(input_file, smiles_column_name, smiles_ref, method, **kwargs):
     :param substructure_method: str, method used to convert smiles_ref to mol_ref, allowed values include 'SMILES', 'SMARTS'
     :param output_folder: str, path of the output file
     :param output_file: str, name of the output file
-    :param output_option: str, options to output data, allowed values include 'selected', 'not_selected' and 'all'
+    :param output_option: str, options to output data, allowed values include 'satisfied', 'not_satisfied' and 'all'
     """
     # read df
     df = pd.read_csv(input_file)
@@ -155,13 +155,13 @@ def main(input_file, smiles_column_name, smiles_ref, method, **kwargs):
     output_file = kwargs.get('output_file', input_file)
     output_file = os.path.splitext(os.path.split(output_file)[1])[0]
     output_file = os.path.join(folder, output_file)
-    output_option = kwargs.get('output_option', 'selected')
+    output_option = kwargs.get('output_option', 'satisfied')
 
     # similarity search
     df = similarity_search_single_ref(df, smiles_column_name, smiles_ref, method, **kwargs)
-    if output_option == 'selected':
+    if output_option == 'satisfied':
         df_sim = pd.DataFrame(df[df['is_similar']], columns = COLUMNS)
-    elif output_option == 'not_selected':
+    elif output_option == 'not_satisfied':
         df_sim = pd.DataFrame(df[~df['is_similar']], columns = COLUMNS)
     elif output_option == 'all':
         df_sim = pd.DataFrame(df, columns = COLUMNS + ['is_similar'])
@@ -169,7 +169,8 @@ def main(input_file, smiles_column_name, smiles_ref, method, **kwargs):
         raise Exception('Error: Invalid output option.')
 
     # write to file
-    df_sim.sort_values(by=['Similarity_Score'], ascending=False, inplace=True)
+    if method in {'fingerprint', 'mcs'}:
+        df_sim.sort_values(by=['Similarity_Score'], ascending=False, inplace=True)
     df_sim = df_sim.reset_index(drop=True)
     print('Number of rows:', df_sim.shape[0])
     df_sim = remove_unnamed_columns(df_sim)
@@ -179,18 +180,18 @@ def main(input_file, smiles_column_name, smiles_ref, method, **kwargs):
 
 if __name__ == '__main__':
 
-    input_file = 'similarity_search/tests/library.csv'
-    # input_file = '/Users/guohan/Documents/Projects/Datasets/HTS/Combination/forGNN/HTS_forGNN_446663.csv'
+    # input_file = 'similarity_search/tests/library.csv'
+    input_file = '/Users/guohan/Documents/Projects/Datasets/HTS/Combination/forGNN/HTS_forGNN_446663.csv'
     smiles_column_name = 'Cleaned_SMILES'
-    smiles_ref = 'c1ccccc1'
+    smiles_ref = 'NO'
     output_file = 'output.csv'
     output_folder = 'similarity_search_results'
     ### Method: 'fingerprint' ###
-    main(input_file, smiles_column_name, smiles_ref, method='fingerprint', similarity_cutoff=0.3, output_folder=output_folder, output_file=output_file, output_option='all')
+    # main(input_file, smiles_column_name, smiles_ref, method='fingerprint', similarity_cutoff=0.3, output_folder=output_folder, output_file=output_file, output_option='all')
     ### Method: 'mcs' ###
     # main(input_file, smiles_column_name, smiles_ref, method='mcs', similarity_cutoff=0.3, output_folder=output_folder, output_file=output_file, output_option='all')
     ### Method: 'substructure' ###
-    # main(input_file, smiles_column_name, smiles_ref, method='substructure', substructure_method='SMARTS', output_folder=output_folder, output_file=output_file, output_option='all')
+    main(input_file, smiles_column_name, smiles_ref, method='substructure', substructure_method='SMARTS', output_folder=output_folder, output_file=output_file, output_option='satisfied')
 
 
     ### Tests ###
@@ -214,7 +215,7 @@ if __name__ == '__main__':
     # smiles = '[NH3+]CC'   # True
     # smiles_ref = '[*][N+]'
 
-    smiles = 'O=C(C1=CC(N2CCNCC2)=CC=C1C)NC3(CC3)c4c5ccccc5ccc4'
+    # smiles = 'O=C(C1=CC(N2CCNCC2)=CC=C1C)NC3(CC3)c4c5ccccc5ccc4'
     # smiles = 'O=C(C1=CC(N2CCNCC2)=CC=C1C)NCCc3c4ccccc4ccc3'
 
     # smiles_ref = '[*]C1=CC=CC2=C1C=CC=C2'   # False if not kekulized
@@ -226,7 +227,7 @@ if __name__ == '__main__':
     # smiles_ref = '[*]C(N[*]c(ccc1)c2c1cccc2)=O'   # True
     # smiles_ref = 'O=C(c1cccc(N)c1)N[*]c(ccc2)c3c2cccc3'   # True
     # smiles_ref = 'O=C(c1cccc([*]N)c1)N[*]c(ccc2)c3c2cccc3'
-    smiles_ref = 'c1(cccc2ccccc12)*NC(=O)*'
+    # smiles_ref = 'c1(cccc2ccccc12)*NC(=O)*'
 
 
 
