@@ -138,13 +138,14 @@ def get_scaffold(smiles, include_chirality = False, generic = False):
     return scaffold_smiles
 
 
-def cal_MCS(smiles_1, smiles_2):
+def cal_MCS(smiles_1, smiles_2, match='exact'):
     """
     Compute the Maximum Common Sub-structure between two SMILES
     MCS similarity is defined as Jaccard score on heavy atoms, using the MCS as intersection.
     More details at https://www.rdkit.org/docs/source/rdkit.Chem.MCS.html
     :param smiles_1: str, SMILES for molecule 1
     :param smiles_2: str, SMILES for molecule 2
+    :param match: str, specify 'match' to use different comparison functions, allowed values include 'exact', 'anyAtom'
     """
     # check if SMILES is valid
     if (not smiles_1) or (not smiles_2):
@@ -161,7 +162,12 @@ def cal_MCS(smiles_1, smiles_2):
         return 0
 
     # compute MCS
-    mcs = rdFMCS.FindMCS([mol_1, mol_2], completeRingsOnly=True, timeout=1)
+    if match == 'exact':
+        mcs = rdFMCS.FindMCS([mol_1, mol_2], completeRingsOnly=True, timeout=1)
+    elif match == 'anyAtom':
+        mcs = rdFMCS.FindMCS([mol_1, mol_2], completeRingsOnly=True, atomCompare=rdFMCS.AtomCompare.CompareAny, timeout=10)
+    else:
+        raise Exception('Error: Invalid function name for matching.')
     similarity = float(mcs.numAtoms) / (mol_1.GetNumHeavyAtoms() + mol_2.GetNumHeavyAtoms() - mcs.numAtoms)
 
     return similarity
