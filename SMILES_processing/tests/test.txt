@@ -1,1 +1,0 @@
-O=C([C@@H](NC([C@@H](NC(CN1N=NN=C1)=S)C(C)C)=S)CC2=CCC3=C2C=CC=N3)O
