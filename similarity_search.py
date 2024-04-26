@@ -213,15 +213,15 @@ def similarity_search_multiple_ref(input_file_library, input_file_ref, id_column
     print(f'Mean time is {np.mean(np.array(total_time)):.4f}, std is {np.std(np.array(total_time)):.4f}')
 
 
-### Get most similar analogs ###
-def get_most_similar_analog(input_file, analogs_dir, n=1):
+### Get the most similar analogs ###
+def get_nth_analog(input_file, analogs_dir, rank=1):
     """
-    Get the rank-n most similar analogs
+    Get the rank-n most similar compounds
     :param input_file: str, path of the file containing reference compounds
     :param analogs_dir: str, path of the folder containing analogs
-    :param n: int, specify the rank of the similar analog
+    :param rank: int, specify the rank of the similar analog
     """
-    assert n >= 1, 'Error: Invalid rank.'
+    assert rank >= 1, 'Error: Invalid rank.'
 
     # output file
     output_file = os.path.splitext(os.path.abspath(input_file))[0]
@@ -229,7 +229,7 @@ def get_most_similar_analog(input_file, analogs_dir, n=1):
     df = pd.read_csv(input_file)
     df_bestScore = pd.DataFrame(df, columns = ['ID', 'SMILES', 'Cleaned_SMILES'])
 
-    df_bestScore['Analog'] = df_bestScore['ID'].apply(lambda cmp: get_analog(cmp, analogs_dir, n-1))
+    df_bestScore['Analog'] = df_bestScore['ID'].apply(lambda cmp: get_nth_analog_single_ref(cmp, analogs_dir, rank))
     df_bestScore[['Analog_ID', 'Analog_SMILES', 'Analog_Cleaned_SMILES', 'Similarity_Score']] = \
         pd.DataFrame(df_bestScore['Analog'].tolist())
     COLUMNS = ['ID', 'SMILES', 'Cleaned_SMILES', 'Analog_ID', 'Analog_SMILES', 'Analog_Cleaned_SMILES', 'Similarity_Score']
@@ -238,10 +238,11 @@ def get_most_similar_analog(input_file, analogs_dir, n=1):
     df_bestScore = df_bestScore.reset_index(drop=True)
     print('Number of rows:', df_bestScore.shape[0])
     df_bestScore = remove_unnamed_columns(df_bestScore)
-    df_bestScore.to_csv(f'{output_file}_Top{n}_{df_bestScore.shape[0]}.csv')
+    df_bestScore.to_csv(f'{output_file}_Top{rank}_{df_bestScore.shape[0]}.csv')
 
 
-def get_analog(cmp, analogs_dir, n):
+def get_nth_analog_single_ref(cmp, analogs_dir, rank):
+    n = rank -1
     files = os.listdir(analogs_dir)
     filtered_files = [file for file in files if file.startswith(f'{cmp}_')]
     df_cmp = pd.read_csv(f'{analogs_dir}/{filtered_files[0]}')
@@ -252,6 +253,7 @@ def get_analog(cmp, analogs_dir, n):
     return df_cmp.iloc[n, [False, True, True, True, False, False, False, False, False, True]].tolist()
 
 
+### Plot similarity score distribution ###
 def plot_distribution(input_file):
     """
     Plot similarity score distribution
@@ -325,7 +327,7 @@ if __name__ == '__main__':
     ### Get the rank-n most similar analogs ###
     # input_file = 'similarity_search/tests/reference_cmps.csv'
     # analogs_dir = 'similarity_search/tests/similarity_search_results'
-    # get_most_similar_analog(input_file, analogs_dir, n=1)
+    # get_nth_analog(input_file, analogs_dir, rank=1)
 
 
     ### Plot similarity score distribution
