@@ -280,14 +280,14 @@ if __name__ == '__main__':
     # print(clusters)
     
     print('*************************')
-    # print('Clustering based on scaffold')
-    # clusters = scaffold_based_clustering(smiles_list, lprint = False)
-    # print(clusters)
+    print('Clustering based on scaffold')
+    clusters = scaffold_based_clustering(smiles_list, lprint = False)
+    print(clusters)
 
     print('*************************')
-    print('Extract representative smiles')
-    id_list = ['ID_0', 'ID_1', 'ID_2', 'ID_3', 'ID_4', 'ID_5', 'ID_6', 'ID_7']
-    print(find_representative(smiles_list, representative_method='random', counts=3))
+    # print('Extract representative smiles')
+    # id_list = ['ID_0', 'ID_1', 'ID_2', 'ID_3', 'ID_4', 'ID_5', 'ID_6', 'ID_7']
+    # print(find_representative(smiles_list, representative_method='random', counts=3))
 
 
     

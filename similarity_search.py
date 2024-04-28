@@ -6,7 +6,7 @@ Created on Tue Mar  8 16:10:00 2023
 @author: guohan
 
 1. Similarity search
-2. Get most similar analogs
+2. Select analogs based on similarity cutoff or ranking
 3. Plot similarity score distribution
 
 """
@@ -92,24 +92,24 @@ def is_similar_by_substructure(smiles, smiles_ref, substructure_method='SMILES')
     return hasSubstructure, int(hasSubstructure)
 
 
-def similarity_search_single_ref(input_file, smiles_column_name, smiles_ref, method, **kwargs):
+def similarity_search_single_ref(input_file_library, smiles_column_name, smiles_ref, method, **kwargs):
     """
-    Find SMILES in input_file that are similar to the reference SMILES.
+    Find SMILES in input_file_library that are similar to the reference SMILES.
     Allowed methods include fingerprint, Maximum Common Structure (mcs), and substructure.
-    :param input_file: str, path of the input library
-    :param smiles_column_name: str, name of the SMILES column
-    :param smiles_ref: str, reference SMILES
+    :param input_file_library: str, path of the input library.
+    :param smiles_column_name: str, name of the SMILES column.
+    :param smiles_ref: str, reference SMILES.
     :param method: str, method for similarity search, allowed values include 'fingerprint', 'mcs' and 'substructure'.
     The method 'substructure' will select compounds that contain the given substructure.
     :param similarity_cutoff: float, similarity cutoff for 'fingerprint' and 'mcs' method.
     :param mcs_match: str, specify 'mcs_match' to use different comparison functions for MCS, allowed values include 'exact', 'anyAtom'.
-    :param substructure_method: str, method used to convert smiles_ref to mol_ref, allowed values include 'SMILES', 'SMARTS'
-    :param output_folder: str, path of the output file
-    :param output_file: str, name of the output file
-    :param output_option: str, options to output data, allowed values include 'satisfied', 'not_satisfied' and 'all'
+    :param substructure_method: str, method used to convert smiles_ref to mol_ref, allowed values include 'SMILES', 'SMARTS'.
+    :param output_folder: str, path of the output file.
+    :param output_file: str, name of the output file.
+    :param output_option: str, options to output data, allowed values include 'satisfied', 'not_satisfied' and 'all'.
     """
     # files
-    df = pd.read_csv(input_file)
+    df = pd.read_csv(input_file_library)
     COLUMNS = df.columns.tolist() + ['Similarity_Score']
     assert smiles_column_name in COLUMNS, 'Error: Invalid input SMILES column name.'
 
@@ -117,7 +117,7 @@ def similarity_search_single_ref(input_file, smiles_column_name, smiles_ref, met
     if not os.path.exists(folder):
         os.makedirs(folder)
         print(f'Fold {folder} created.')
-    output_file = kwargs.get('output_file', input_file)
+    output_file = kwargs.get('output_file', input_file_library)
     output_file = os.path.splitext(os.path.split(output_file)[1])[0]
     output_file = os.path.join(folder, output_file)
 
@@ -176,16 +176,16 @@ def similarity_search_multiple_ref(input_file_library, input_file_ref, id_column
     Allowed methods include fingerprint, Maximum Common Structure (mcs), and substructure.
     :param input_file_library: str, path of the input library.
     :param input_file_ref: str, path of the input reference SMILES.
-    :param id_column_name_ref: str, name of the ID column in input_file_ref
-    :param smiles_column_name_ref: str, name of the SMILES column in input_file_ref
+    :param id_column_name_ref: str, name of the ID column in input_file_ref.
+    :param smiles_column_name_ref: str, name of the SMILES column in input_file_ref.
     :param method: str, method for similarity search, allowed values include 'fingerprint', 'mcs' and 'substructure'.
     The method 'substructure' will select compounds that contain the given substructure.
     :param similarity_cutoff: float, similarity cutoff for 'fingerprint' and 'mcs' method.
     :param mcs_match: str, specify 'mcs_match' to use different comparison functions for MCS, allowed values include 'exact', 'anyAtom'.
-    :param substructure_method: str, method used to convert smiles_ref to mol_ref, allowed values include 'SMILES', 'SMARTS'
-    :param output_folder: str, path of the output file
-    :param output_file: str, name of the output file
-    :param output_option: str, options to output data, allowed values include 'satisfied', 'not_satisfied' and 'all'
+    :param substructure_method: str, method used to convert smiles_ref to mol_ref, allowed values include 'SMILES', 'SMARTS'.
+    :param output_folder: str, path of the output file.
+    :param output_file: str, name of the output file.
+    :param output_option: str, options to output data, allowed values include 'satisfied', 'not_satisfied' and 'all'.
     """
     # read reference SMILES
     df_ref = pd.read_csv(input_file_ref)
@@ -213,44 +213,90 @@ def similarity_search_multiple_ref(input_file_library, input_file_ref, id_column
     print(f'Mean time is {np.mean(np.array(total_time)):.4f}, std is {np.std(np.array(total_time)):.4f}')
 
 
-### Get the most similar analogs ###
-def get_nth_analog(input_file, analogs_dir, rank=1):
+### Select analogs ###
+def select_analogs(input_file_ref, analogs_dir, analog_method, **kwargs):
     """
-    Get the rank-n most similar compounds
-    :param input_file: str, path of the file containing reference compounds
-    :param analogs_dir: str, path of the folder containing analogs
-    :param rank: int, specify the rank of the similar analog
+    Select analogs based on two criteria: 1. similarity scores are above the given similarity score cutoff;
+    or 2. the rank n most similar analogs
+    :param input_file_ref: str, path of the input reference SMILES.
+    :param analogs_dir: str, path of the directory containing analogs.
+    :param analog_method: str, method for selecting analogs, allowed values include 'cutoff' and 'rank'.
+    :param similarity_cutoff: float, similarity cutoff for selecting analogs.
+    :param similarity_rank: int, rank of the selected analog.
+    :param deduplication: bool, whether to deduplicate the selected analogs
     """
-    assert rank >= 1, 'Error: Invalid rank.'
-
     # output file
-    output_file = os.path.splitext(os.path.abspath(input_file))[0]
+    output_file = os.path.splitext(os.path.abspath(input_file_ref))[0]
 
-    df = pd.read_csv(input_file)
-    df_bestScore = pd.DataFrame(df, columns = ['ID', 'SMILES', 'Cleaned_SMILES'])
+    # get reference IDs and SMILES
+    df_ref = pd.read_csv(input_file_ref)
+    ref_IDs = df_ref['ID'].tolist()
+    ref_SMILESs = df_ref['SMILES'].tolist()
 
-    df_bestScore['Analog'] = df_bestScore['ID'].apply(lambda cmp: get_nth_analog_single_ref(cmp, analogs_dir, rank))
-    df_bestScore[['Analog_ID', 'Analog_SMILES', 'Analog_Cleaned_SMILES', 'Similarity_Score']] = \
-        pd.DataFrame(df_bestScore['Analog'].tolist())
-    COLUMNS = ['ID', 'SMILES', 'Cleaned_SMILES', 'Analog_ID', 'Analog_SMILES', 'Analog_Cleaned_SMILES', 'Similarity_Score']
-    df_bestScore = pd.DataFrame(df_bestScore, columns = COLUMNS)
+    # get analogs
+    if analog_method == 'cutoff':
+        similarity_cutoff = kwargs.get('similarity_cutoff', 0.5)
+        print(f'Get analogs whose similarity scores are above {similarity_cutoff}.')
+        output_file = f'{output_file}_cutoff{similarity_cutoff}'
 
-    df_bestScore = df_bestScore.reset_index(drop=True)
-    print('Number of rows:', df_bestScore.shape[0])
-    df_bestScore = remove_unnamed_columns(df_bestScore)
-    df_bestScore.to_csv(f'{output_file}_Top{rank}_{df_bestScore.shape[0]}.csv')
+        dfs = []
+        files = os.listdir(analogs_dir)
+        for i, id in enumerate(ref_IDs):
+            analogs_file = [file for file in files if file.startswith(f'{id}_')][0]
+            df_analogs = pd.read_csv(f'{analogs_dir}/{analogs_file}')
 
+            df_selected_analogs = df_analogs[df_analogs['Similarity_Score'] >= similarity_cutoff]
 
-def get_nth_analog_single_ref(cmp, analogs_dir, rank):
-    n = rank -1
-    files = os.listdir(analogs_dir)
-    filtered_files = [file for file in files if file.startswith(f'{cmp}_')]
-    df_cmp = pd.read_csv(f'{analogs_dir}/{filtered_files[0]}')
+            if df_selected_analogs.empty:
+                continue
+            df_selected_analogs = pd.DataFrame(df_selected_analogs, columns=['ID', 'SMILES', 'Similarity_Score'])
+            df_selected_analogs.rename(columns={'ID': 'Analog_ID', 'SMILES': 'Analog_SMILES'}, inplace=True)
+            df_selected_analogs['reference_ID'] = id
+            df_selected_analogs['reference_SMILES'] = ref_SMILESs[i]
+            dfs.append(df_selected_analogs)
 
-    if df_cmp.shape[0] <= n:
-        return ['', '', '', 0.0]
+    elif analog_method == 'rank':
+        similarity_rank = kwargs.get('similarity_rank', 1)
+        assert similarity_rank >= 1, 'Error: Invalid rank.'
+        print(f'Get the rank {similarity_rank} most similar analog.')
+        output_file = f'{output_file}_rank{similarity_rank}'
 
-    return df_cmp.iloc[n, [False, True, True, True, False, False, False, False, False, True]].tolist()
+        dfs = []
+        files = os.listdir(analogs_dir)
+        for i, id in enumerate(ref_IDs):
+            analogs_file = [file for file in files if file.startswith(f'{id}_')][0]
+            df_analogs = pd.read_csv(f'{analogs_dir}/{analogs_file}')
+
+            df_selected_analogs = pd.DataFrame()
+            if df_analogs.shape[0] >= similarity_rank:
+                df_analogs = df_analogs.sort_values(by=['Similarity_Score'], ascending=[False], ignore_index=True)
+                df_selected_analogs = df_analogs.loc[[similarity_rank - 1]]
+
+            if df_selected_analogs.empty:
+                continue
+            df_selected_analogs = pd.DataFrame(df_selected_analogs, columns=['ID', 'SMILES', 'Similarity_Score'])
+            df_selected_analogs.rename(columns={'ID': 'Analog_ID', 'SMILES': 'Analog_SMILES'}, inplace=True)
+            df_selected_analogs['reference_ID'] = id
+            df_selected_analogs['reference_SMILES'] = ref_SMILESs[i]
+            dfs.append(df_selected_analogs)
+
+    else:
+        raise Exception('Error: Invalid method for selecting analogs.')
+
+    # concat results
+    df_concat = pd.concat(dfs, ignore_index=True, sort=False)
+
+    # remove duplicates
+    deduplication = kwargs.get('deduplication', False)
+    if deduplication:
+        df_concat = df_concat.sort_values(by=['Similarity_Score'], ascending=[False], ignore_index=True)
+        df_concat = df_concat.drop_duplicates(['Analog_ID'], keep='first', ignore_index=True)
+
+    # write output file
+    df_concat = df_concat.reset_index(drop=True)
+    print('Number of selected analogs:', df_concat.shape[0])
+    df_concat = remove_unnamed_columns(df_concat)
+    df_concat.to_csv(f'{output_file}_{df_concat.shape[0]}.csv')
 
 
 ### Plot similarity score distribution ###
@@ -267,7 +313,7 @@ def plot_distribution(input_file):
     output_file = f'{output_file}_similarity_distribution.pdf'
 
     plt.figure(1)
-    plt.hist(values, 10, range=[0.0, 1.0])
+    plt.hist(values, 10, range=(0.0, 1.0))
     plt.xlabel('Similarity Score', fontproperties=font)
     plt.ylabel('Counts', fontproperties=font)
     plt.xticks(fontproperties=font)
@@ -285,8 +331,8 @@ if __name__ == '__main__':
 
     ### Similarity search for a single reference SMILES ###
     if single_ref:
-        input_file = 'similarity_search/tests/library.csv'
-        # input_file = '/Users/guohan/Documents/Projects/Datasets/HTS/Combination/forGNN/HTS_forGNN_446663.csv'
+        input_file_library = 'similarity_search/tests/library.csv'
+        # input_file_library = '/Users/guohan/Documents/Projects/Datasets/HTS/Combination/forGNN/HTS_forGNN_446663.csv'
         smiles_column_name = 'Cleaned_SMILES'
         smiles_ref = 'N#CC1(Oc2ccc(-c3ccccc3)cc2)CC2(CCN(C(=O)Nc3ccccc3)C2)C1'
         # smiles_ref = 'C1=CC=CC=C1'
@@ -296,11 +342,11 @@ if __name__ == '__main__':
         output_option = 'satisfied'
 
         ### Method: 'fingerprint' ###
-        # similarity_search_single_ref(input_file, smiles_column_name, smiles_ref, method='fingerprint', similarity_cutoff=0.3, output_folder=output_folder, output_file=output_file, output_option=output_option)
+        # similarity_search_single_ref(input_file_library, smiles_column_name, smiles_ref, method='fingerprint', similarity_cutoff=0.3, output_folder=output_folder, output_file=output_file, output_option=output_option)
         ### Method: 'mcs' ###
-        # similarity_search_single_ref(input_file, smiles_column_name, smiles_ref, method='mcs', mcs_match='exact', similarity_cutoff=0.3, output_folder=output_folder, output_file=output_file, output_option=output_option)
+        # similarity_search_single_ref(input_file_library, smiles_column_name, smiles_ref, method='mcs', mcs_match='exact', similarity_cutoff=0.3, output_folder=output_folder, output_file=output_file, output_option=output_option)
         ### Method: 'substructure' ###
-        # similarity_search_single_ref(input_file, smiles_column_name, smiles_ref, method='substructure', substructure_method='SMARTS', output_folder=output_folder, output_file=output_file, output_option=output_option)
+        # similarity_search_single_ref(input_file_library, smiles_column_name, smiles_ref, method='substructure', substructure_method='SMARTS', output_folder=output_folder, output_file=output_file, output_option=output_option)
 
     ### Similarity search for multiple SMILES ###
     else:
@@ -324,14 +370,21 @@ if __name__ == '__main__':
         #                                method='substructure', substructure_method='SMARTS',output_folder=output_folder, output_option=output_option)
 
 
-    ### Get the rank-n most similar analogs ###
-    # input_file = 'similarity_search/tests/reference_cmps.csv'
-    # analogs_dir = 'similarity_search/tests/similarity_search_results'
-    # get_nth_analog(input_file, analogs_dir, rank=1)
+    ### Select analogs ###
+    input_file_ref = 'similarity_search/tests/reference_cmps.csv'
+    analogs_dir = 'similarity_search/tests/similarity_search_results'
+    ### Select analogs above similarity cutoff
+    # analog_method = 'cutoff'
+    # similarity_cutoff = 0.4
+    # select_analogs(input_file_ref, analogs_dir, analog_method, similarity_cutoff=similarity_cutoff)
+    ### Select the rank-n most similar analog
+    # analog_method = 'rank'
+    # similarity_rank = 1
+    # select_analogs(input_file_ref, analogs_dir, analog_method, similarity_rank=similarity_rank)
 
 
-    ### Plot similarity score distribution
-    # input_file = 'similarity_search/tests/reference_cmps_Top1_12.csv'
+    ### Plot similarity score distribution ###
+    # input_file = 'similarity_search/tests/reference_cmps_rank1_5.csv'
     # plot_distribution(input_file)
 
 
