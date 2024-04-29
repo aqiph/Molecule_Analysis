@@ -251,8 +251,8 @@ def select_analogs(input_file_ref, analogs_dir, analog_method, **kwargs):
                 continue
             df_selected_analogs = pd.DataFrame(df_selected_analogs, columns=['ID', 'SMILES', 'Similarity_Score'])
             df_selected_analogs.rename(columns={'ID': 'Analog_ID', 'SMILES': 'Analog_SMILES'}, inplace=True)
-            df_selected_analogs['reference_ID'] = id
-            df_selected_analogs['reference_SMILES'] = ref_SMILESs[i]
+            df_selected_analogs['Reference_ID'] = id
+            df_selected_analogs['Reference_SMILES'] = ref_SMILESs[i]
             dfs.append(df_selected_analogs)
 
     elif analog_method == 'rank':
@@ -276,8 +276,8 @@ def select_analogs(input_file_ref, analogs_dir, analog_method, **kwargs):
                 continue
             df_selected_analogs = pd.DataFrame(df_selected_analogs, columns=['ID', 'SMILES', 'Similarity_Score'])
             df_selected_analogs.rename(columns={'ID': 'Analog_ID', 'SMILES': 'Analog_SMILES'}, inplace=True)
-            df_selected_analogs['reference_ID'] = id
-            df_selected_analogs['reference_SMILES'] = ref_SMILESs[i]
+            df_selected_analogs['Reference_ID'] = id
+            df_selected_analogs['Reference_SMILES'] = ref_SMILESs[i]
             dfs.append(df_selected_analogs)
 
     else:
