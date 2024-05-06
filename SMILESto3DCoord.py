@@ -16,7 +16,7 @@ import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from process_SMILES import plot_2d_molecule_from_mol, cleanup_smiles_by_CSP
+from SMILES_processing import plot_2d_molecule_from_mol, cleanup_smiles_by_CSP
 
 
 
@@ -25,7 +25,7 @@ from process_SMILES import plot_2d_molecule_from_mol, cleanup_smiles_by_CSP
 def convert_single_SMILES_to_Coord(input_file, cleanup_SMILES = False, opt = True, plot2D = True):
     """
     read a single SMILES from excel, generate .xyz file of each smiles in the input_file
-    :param input_file: str, the name of the input file
+    :param input_file: str, path of the input file
     :param cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
     :param opt: bool, whether or not to add H atoms and optimize the MMFF94 force field
     :param plot2D: bool, whether or not to plot 2D structure
@@ -56,7 +56,7 @@ def convert_single_SMILES_to_Coord(input_file, cleanup_SMILES = False, opt = Tru
 def convert_multiple_SMILES_to_Coord(input_file, smiles_column_name, id_column_name = None, cleanup_SMILES = False, opt = True, plot2D = True):
     """
     read multiple SMILES from excel, generate .xyz file of each smiles in the input_file
-    :param input_file: str, the name of the input file
+    :param input_file: str, path of the input file
     :param smiles_column_name: str, the column name of the smiles
     :param id_column_name: str, the column name of the id
     :param cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline

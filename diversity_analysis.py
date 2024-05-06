@@ -29,7 +29,7 @@ from utils.tools import remove_unnamed_columns
 def cal_num_scaffold(input_file, smiles_column_name = 'SMILES'):
     """
     calculate the number of scaffolds in the given library
-    :param input_file: str, the filename of the input file
+    :param input_file: str, path of the input file
     :param smiles_column_name: str, the name of the SMILES column
     """
     # output file path without extension
@@ -66,7 +66,7 @@ def plot_distance_distribution_by_fingerprint(input_file, smiles_column_name = '
     """
     calculate the distance between every pair of SMILES, based on fingerprint
     plot the distribution of the distance
-    :param input_file: str, the filename of the input file
+    :param input_file: str, path of the input file
     :param smiles_column_name: str, the name of the SMILES column
     :param fp_method: str, method to compute fingerprint (topology: topological fingerprint;
                                                          maccs: MACCS fingerprint;

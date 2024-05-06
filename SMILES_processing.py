@@ -94,7 +94,7 @@ def process_single_SMILES(input_file, cleanup_SMILES = True, cleanup_chirality =
                           addH = False, plot2D = True, legend = None):
     """
     read and process a single SMILES from file
-    :param input_file: str, the name of the input file
+    :param input_file: str, path of the input file
     :param cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline
     :param cleanup_chirality: bool, whether or not to remove chirality
     :param process_disconnection: bool, whether or not to process disconnected SMILES
