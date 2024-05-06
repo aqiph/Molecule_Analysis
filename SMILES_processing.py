@@ -128,7 +128,7 @@ def process_multiple_SMILES(input_file, smiles_column_name, id_column_name, clea
                             addH = False, plot2D = True, legend = None):
     """
     read and process multiple SMILES from file
-    :param input_file: str, the name of the input file
+    :param input_file: str, path of the input file
     :param smiles_column_name: str, the column name of the smiles
     :param id_column_name: str, the column name of the id
     :param cleanup_SMILES: bool, whether or not to clean up SMILES using chembl_structure_pipeline

@@ -303,6 +303,7 @@ def select_analogs(input_file_ref, analogs_dir, analog_method, **kwargs):
 def plot_distribution(input_file):
     """
     Plot similarity score distribution
+    :param input_file: str, path of the input file
     """
     # files
     output_file = os.path.splitext(os.path.abspath(input_file))[0]
