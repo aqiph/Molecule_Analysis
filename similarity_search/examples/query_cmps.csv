@@ -1,0 +1,13 @@
+,ID,SMILES,Cleaned_SMILES,Assay,Assay_Parameter,Operator,Value,Units
+0,cmpd_3704,c1cc2c(cc1C=C3C(=O)NC(=O)N=C3O)C(=Cc4cc[nH]c4)C(=N2)O,O=C1N=C(O)C(=Cc2ccc3c(c2)C(=Cc2cc[nH]c2)C(O)=N3)C(=O)N1,Molecular Generation,,,,
+1,cmpd_11656,c1cc2ccc(cc2nc1)S(=O)(=O)NCC3=C(CN=C3)C(=O)O,O=C(O)C1=C(CNS(=O)(=O)c2ccc3cccnc3c2)C=NC1,Molecular Generation,,,,
+2,cmpd_3585,c1cc2c(cc1C=C3C(=NC(=O)C(=N3)O)O)OC(O2)(F)F,O=C1N=C(O)C(=Cc2ccc3c(c2)OC(F)(F)O3)N=C1O,Molecular Generation,,,,
+3,cmpd_11781,CN(Cc1cnc2c(n1)c([nH]c(=N)n2)N)c3ccc(cc3)C(=O)N4CCCC4,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCCC2)cc1,Molecular Generation,,,,
+4,cmpd_4760,c1cc2c3cc(ccc3c(nc2nc1)O)C=C4C(=NC(=O)N=C4O)O,O=C1N=C(O)C(=Cc2ccc3c(O)nc4ncccc4c3c2)C(O)=N1,Molecular Generation,,,,
+5,GDI13-602,O=C(NC1=CC=C(C2=NN(C3CCNCC3)N=C2)C(C(F)(F)F)=N1)[C@H](C4(C)C)[C@@H]4C5=NC=C(F)C=N5,CC1(C)C(C(=O)Nc2ccc(-c3cnn(C4CCNCC4)n3)c(C(F)(F)F)n2)C1c1ncc(F)cn1,Activity,MIC90,=,10.9,uM
+6,GDI13-598,O=C(NC1=CC=C(N2N=CC(CN3CCOCC3)=N2)C(C(F)(F)F)=N1)[C@H](C4(C)C)[C@@H]4C5=NC=C(F)C=N5,CC1(C)C(C(=O)Nc2ccc(-n3ncc(CN4CCOCC4)n3)c(C(F)(F)F)n2)C1c1ncc(F)cn1,Activity,MIC90,=,12.4,uM
+7,GDI13-599,O=C(NC1=CC=C(C2=CN(CCN3CCOCC3)N=N2)C(C(F)(F)F)=N1)[C@H](C4(C)C)[C@@H]4C5=NC=C(F)C=N5,CC1(C)C(C(=O)Nc2ccc(-c3cn(CCN4CCOCC4)nn3)c(C(F)(F)F)n2)C1c1ncc(F)cn1,Activity,MIC90,=,30.3,uM
+8,GDI13-601,O=C(NC1=CC=C(C2=NN(CCN3CCOCC3)N=C2)C(C(F)(F)F)=N1)[C@H](C4(C)C)[C@@H]4C5=NC=C(F)C=N5,CC1(C)C(C(=O)Nc2ccc(-c3cnn(CCN4CCOCC4)n3)c(C(F)(F)F)n2)C1c1ncc(F)cn1,Activity,MIC90,=,0.85,uM
+9,GDI13-606,O=C(NC1=CC=C(C2=NN(CCO)N=C2)C(C(F)(F)F)=N1)[C@H](C3(C)C)[C@@H]3C4=NC=C(F)C=N4,CC1(C)C(C(=O)Nc2ccc(-c3cnn(CCO)n3)c(C(F)(F)F)n2)C1c1ncc(F)cn1,Activity,MIC90,=,4.8,uM
+10,pheRS,N#CC1(Oc2ccc(-c3ccccc3)cc2)CC2(CCN(C(=O)Nc3ccccc3)C2)C1,N#CC1(Oc2ccc(-c3ccccc3)cc2)CC2(CCN(C(=O)Nc3ccccc3)C2)C1,,,,,
+11,substructure_test,C1=CC=CC=C1,C1=CC=CC=C1,,,,,
