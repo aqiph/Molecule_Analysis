@@ -17,6 +17,7 @@ from PAINS_analysis import PAINS_Filter
 
 if __name__=='__main__':
     PAINS_filter = PAINS_Filter()
-    input_file = 'tests/test_PAINS_analysis.csv'
+    # input_file = 'tests/test_PAINS_analysis.csv'
+    input_file = 'tests/analysis/HTS_FDA_forGeneralUse_2664.csv'
     smiles_column_name = 'SMILES'
-    PAINS_filter.filter_PAINS(input_file, smiles_column_name, output_option='all')
+    PAINS_filter.filter_PAINS(input_file, smiles_column_name, output_option='PAINS')
