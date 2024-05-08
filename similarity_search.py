@@ -110,6 +110,7 @@ def similarity_search_single_query(input_file_library, smiles_column_name, smile
     """
     # files
     df = pd.read_csv(input_file_library)
+    df['ID'] = df['ID'].apply(lambda id: str(id))
     COLUMNS = df.columns.tolist() + ['Similarity_Score']
     assert smiles_column_name in COLUMNS, 'Error: Invalid input SMILES column name.'
 
@@ -189,7 +190,7 @@ def similarity_search_multiple_query(input_file_library, input_file_query, id_co
     """
     # read query SMILES
     df_query = pd.read_csv(input_file_query)
-    IDs = df_query[id_column_name_query].values.tolist()
+    IDs = [str(id) for id in df_query[id_column_name_query].values.tolist()]
     SMILES = df_query[smiles_column_name_query].values.tolist()
     num_SMILES = len(IDs)
 
@@ -244,6 +245,7 @@ def select_analogs(input_file_query, analogs_dir, analog_method, **kwargs):
         for i, id in enumerate(IDs_query):
             analogs_file = [file for file in files if file.startswith(f'{id}_')][0]
             df_analogs = pd.read_csv(f'{analogs_dir}/{analogs_file}')
+            df_analogs['ID'] = df_analogs['ID'].apply(lambda analog_id: str(analog_id))
 
             df_selected_analogs = df_analogs[df_analogs['Similarity_Score'] >= similarity_cutoff]
 
@@ -251,7 +253,7 @@ def select_analogs(input_file_query, analogs_dir, analog_method, **kwargs):
                 continue
             df_selected_analogs = pd.DataFrame(df_selected_analogs, columns=['ID', 'SMILES', 'Similarity_Score'])
             df_selected_analogs.rename(columns={'ID': 'Analog_ID', 'SMILES': 'Analog_SMILES'}, inplace=True)
-            df_selected_analogs['Query_ID'] = id
+            df_selected_analogs['Query_ID'] = str(id)
             df_selected_analogs['Query_SMILES'] = SMILES_query[i]
             dfs.append(df_selected_analogs)
 
@@ -266,6 +268,7 @@ def select_analogs(input_file_query, analogs_dir, analog_method, **kwargs):
         for i, id in enumerate(IDs_query):
             analogs_file = [file for file in files if file.startswith(f'{id}_')][0]
             df_analogs = pd.read_csv(f'{analogs_dir}/{analogs_file}')
+            df_analogs['ID'] = df_analogs['ID'].apply(lambda analog_id: str(analog_id))
 
             df_selected_analogs = pd.DataFrame()
             if df_analogs.shape[0] >= similarity_rank:
@@ -276,7 +279,7 @@ def select_analogs(input_file_query, analogs_dir, analog_method, **kwargs):
                 continue
             df_selected_analogs = pd.DataFrame(df_selected_analogs, columns=['ID', 'SMILES', 'Similarity_Score'])
             df_selected_analogs.rename(columns={'ID': 'Analog_ID', 'SMILES': 'Analog_SMILES'}, inplace=True)
-            df_selected_analogs['Query_ID'] = id
+            df_selected_analogs['Query_ID'] = str(id)
             df_selected_analogs['Query_SMILES'] = SMILES_query[i]
             dfs.append(df_selected_analogs)
 
@@ -290,7 +293,7 @@ def select_analogs(input_file_query, analogs_dir, analog_method, **kwargs):
     deduplication = kwargs.get('deduplication', False)
     if deduplication:
         df_concat = df_concat.sort_values(by=['Similarity_Score'], ascending=[False], ignore_index=True)
-        df_concat = df_concat.drop_duplicates(['Analog_ID'], keep='first', ignore_index=True)
+        df_concat = df_concat.drop_duplicates('Analog_ID', keep='first', ignore_index=True)
 
     # write output file
     df_concat = df_concat.reset_index(drop=True)
@@ -377,11 +380,11 @@ if __name__ == '__main__':
     ### Select analogs above similarity cutoff
     # analog_method = 'cutoff'
     # similarity_cutoff = 0.4
-    # select_analogs(input_file_query, analogs_dir, analog_method, similarity_cutoff=similarity_cutoff)
+    # select_analogs(input_file_query, analogs_dir, analog_method, similarity_cutoff=similarity_cutoff, deduplication=False)
     ### Select the rank-n most similar analog
     # analog_method = 'rank'
     # similarity_rank = 1
-    # select_analogs(input_file_query, analogs_dir, analog_method, similarity_rank=similarity_rank)
+    # select_analogs(input_file_query, analogs_dir, analog_method, similarity_rank=similarity_rank, deduplication=False)
 
 
     ### Plot similarity score distribution ###

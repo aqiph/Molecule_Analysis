@@ -71,11 +71,11 @@ def run_select_analogs():
     ### Select analogs above similarity cutoff
     # analog_method = 'cutoff'
     # similarity_cutoff = 0.4
-    # select_analogs(input_file_query, analogs_dir, analog_method, similarity_cutoff=similarity_cutoff)
+    # select_analogs(input_file_query, analogs_dir, analog_method, similarity_cutoff=similarity_cutoff, deduplication=False)
     ### Select the rank-n most similar analog
     analog_method = 'rank'
     similarity_rank = 1
-    select_analogs(input_file_query, analogs_dir, analog_method, similarity_rank=similarity_rank)
+    select_analogs(input_file_query, analogs_dir, analog_method, similarity_rank=similarity_rank, deduplication=False)
 
 
 def run_plot_distribution():
