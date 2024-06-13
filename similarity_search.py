@@ -82,7 +82,7 @@ def is_similar_by_substructure(smiles, smiles_sub, substructure_method='SMILES')
     if substructure_method == 'SMILES':
         mol_sub = Chem.MolFromSmiles(smiles_sub)
     elif substructure_method == 'SMARTS':
-        smiles_sub = Chem.MolToSmiles(Chem.MolFromSmiles(smiles_sub))   # Kekulize molecule before get mol as a pattern
+        smiles_sub = Chem.MolToSmiles(Chem.MolFromSmiles(smiles_sub))   # Change molecule before get mol as a pattern, not using the Kekule form
         # print(smiles_sub)
         mol_sub = Chem.MolFromSmarts(smiles_sub)
     else:
@@ -417,7 +417,7 @@ if __name__ == '__main__':
     # smiles = 'O=C(C1=CC(N2CCNCC2)=CC=C1C)NC3(CC3)c4c5ccccc5ccc4'
     # smiles = 'O=C(C1=CC(N2CCNCC2)=CC=C1C)NCCc3c4ccccc4ccc3'
 
-    # smiles_query = '[*]C1=CC=CC2=C1C=CC=C2'   # False if not kekulized
+    # smiles_query = '[*]C1=CC=CC2=C1C=CC=C2'   # False if using kekulized form
     # smiles_query = '*c1cccc2ccccc12'
     # smiles_query = '[*]NC([*])=O'
     # smiles_query = '*NC(*)=O'
