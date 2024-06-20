@@ -173,6 +173,40 @@ def cal_MCS(smiles_1, smiles_2, match='exact'):
     return similarity
 
 
+### Testing ###
+def get_MCS(smiles_1, smiles_2):
+    """
+    Plot MCS
+    """
+    # check if SMILES is valid
+    if (not smiles_1) or (not smiles_2):
+        print(f"Error: Invalid SMILES")
+        return 0
+    try:
+        mol_1 = Chem.MolFromSmiles(smiles_1)
+        mol_2 = Chem.MolFromSmiles(smiles_2)
+    except Exception:
+        print(f"Error: Invalid SMILES")
+        return 0
+    if (not mol_1) or (not mol_2):
+        print(f"Error: Invalid SMILES")
+        return 0
+
+    # compute MCS
+    # Chem.Kekulize(mol_1)
+    # Chem.Kekulize(mol_2)
+    mcs_SMARTS = rdFMCS.FindMCS([mol_1, mol_2], ringMatchesRingOnly=True, completeRingsOnly=True).smartsString
+
+    # convert MCS from SMARTS format to SMILES format
+    mcs_mol = Chem.MolFromSmarts(mcs_SMARTS)  # Not sanitize mol when coverting SMARTS to mol
+    Chem.SanitizeMol(mcs_mol)
+    mcs_SMILES = Chem.MolToSmiles(mcs_mol)
+    try:
+        mcs_SMILES = Chem.MolToSmiles(Chem.MolFromSmiles(mcs_SMILES, sanitize=True))
+    except Exception:
+        print('Error: Cannot convert pattern to proper SMILES, using pattern instead.')
+    print(mcs_SMILES)
+
 
 
 if __name__ == '__main__':
@@ -219,12 +253,14 @@ if __name__ == '__main__':
     #
     # plot_2d_molecule_from_smiles(scaffold_smiles_1, output_file_without_ext = 'smiles_1', legend = 'smiles_1', atomNumber = None)
     # plot_2d_molecule_from_smiles(scaffold_smiles_2, output_file_without_ext = 'smiles_2', legend = 'smiles_2', atomNumber = None)
-    #
-
 
     ### test cal_MCS
-    smiles_1 = 'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C'
+    # smiles_1 = 'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C'
     # smiles_2 = 'CCCC1=NN(C2=C1NC(=NC2=O)C3=C(C=CC(=C3)S(=O)(=O)N4CCN(CC4)C)OCC)C'
-    smiles_2 = 'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C'
-    smiles_2 = ''
-    print(cal_MCS(smiles_1, smiles_2))
+    # smiles_2 = 'CCOC1=C(C=C(C=C1)S(=O)(=O)N(C)C)C2=NC(=O)C3=C(N2)C(=NN3C)C(C)(C)C'
+    # smiles_2 = ''
+    # print(cal_MCS(smiles_1, smiles_2))
+
+    smiles_1 = 'O=C(NC1(O)C(=O)C2=CC=CC=C2C1=O)C1=CC=C(C(F)(F)F)C=C1'
+    smiles_2 = 'C12(NC(=O)c3ccc(cc3)C)CC3CC(C1)CC(C3)CC2'
+    get_MCS(smiles_1, smiles_2)
