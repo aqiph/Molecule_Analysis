@@ -87,9 +87,15 @@ def is_similar_by_substructure(smiles, smiles_sub, substructure_method='SMILES')
         mol_sub = Chem.MolFromSmarts(smiles_sub)
     else:
         raise Exception('Error: Invalid substructure method.')
-
     hasSubstructure = mol.HasSubstructMatch(mol_sub)
-    return hasSubstructure, int(hasSubstructure)
+
+    # compute MCS similarity score for compounds containing the given substructure
+    if hasSubstructure:
+        similarity_score = cal_MCS(smiles, smiles_sub, match='exact')
+    else:
+        similarity_score = 0.0
+
+    return hasSubstructure, similarity_score
 
 
 def similarity_search_single_query(input_file_library, smiles_column_name, smiles_query, method, **kwargs):
