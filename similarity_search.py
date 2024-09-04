@@ -230,7 +230,7 @@ def select_analogs(input_file_query, analogs_dir, analog_method, **kwargs):
     :param analog_method: str, method for selecting analogs, allowed values include 'cutoff', 'rank' and 'topN'.
     :param similarity_cutoff: float, similarity cutoff for selecting analogs.
     :param similarity_rank: int, rank of the selected analog.
-    :parm similarity_topN: int, value N of top selected analog.
+    :param similarity_topN: int, number of top selected analogs.
     :param deduplication: bool, whether to deduplicate the selected analogs
     """
     # output file
