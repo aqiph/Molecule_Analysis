@@ -169,7 +169,7 @@ def similarity_search_single_query(input_file_library, smiles_column_name, smile
         raise Exception('Error: Invalid output option.')
 
     # write to file
-    if method in {'fingerprint', 'mcs'}:
+    if method in {'fingerprint', 'mcs', 'substructure'}:
         df_sim.sort_values(by=['Similarity_Score'], ascending=False, inplace=True)
     df_sim = df_sim.reset_index(drop=True)
     print('Number of rows:', df_sim.shape[0])
@@ -223,13 +223,14 @@ def similarity_search_multiple_query(input_file_library, input_file_query, id_co
 ### Select analogs ###
 def select_analogs(input_file_query, analogs_dir, analog_method, **kwargs):
     """
-    Select analogs based on two criteria: 1. similarity scores are above the given similarity score cutoff;
-    or 2. the rank n most similar analogs
+    Select analogs based on three criteria: 1. similarity scores are above the given similarity score cutoff;
+    2. the rank n most similar analogs; or 3. top n most similar analogs.
     :param input_file_query: str, path of the input query SMILES.
     :param analogs_dir: str, path of the directory containing analogs.
-    :param analog_method: str, method for selecting analogs, allowed values include 'cutoff' and 'rank'.
+    :param analog_method: str, method for selecting analogs, allowed values include 'cutoff', 'rank' and 'topN'.
     :param similarity_cutoff: float, similarity cutoff for selecting analogs.
     :param similarity_rank: int, rank of the selected analog.
+    :parm similarity_topN: int, value N of top selected analog.
     :param deduplication: bool, whether to deduplicate the selected analogs
     """
     # output file
@@ -289,11 +290,40 @@ def select_analogs(input_file_query, analogs_dir, analog_method, **kwargs):
             df_selected_analogs['Query_SMILES'] = SMILES_query[i]
             dfs.append(df_selected_analogs)
 
+    elif analog_method == 'topN':
+        similarity_topN = kwargs.get('similarity_topN', 1)
+        assert similarity_topN >= 1, 'Error: Invalid N value.'
+        print(f'Get top {similarity_topN} most similar analogs.')
+        output_file = f'{output_file}_top{similarity_topN}'
+
+        dfs = []
+        files = os.listdir(analogs_dir)
+        for i, id in enumerate(IDs_query):
+            analogs_file = [file for file in files if file.startswith(f'{id}_')][0]
+            df_analogs = pd.read_csv(f'{analogs_dir}/{analogs_file}')
+            df_analogs['ID'] = df_analogs['ID'].apply(lambda analog_id: str(analog_id))
+
+            num_selected_analogs = min(similarity_topN, df_analogs.shape[0])
+            df_analogs = df_analogs.sort_values(by=['Similarity_Score'], ascending=[False], ignore_index=True)
+            df_selected_analogs = df_analogs.loc[0:(num_selected_analogs - 1)]
+
+            if df_selected_analogs.empty:
+                continue
+            df_selected_analogs = pd.DataFrame(df_selected_analogs, columns=['ID', 'SMILES', 'Similarity_Score'])
+            df_selected_analogs.rename(columns={'ID': 'Analog_ID', 'SMILES': 'Analog_SMILES'}, inplace=True)
+            df_selected_analogs['Query_ID'] = str(id)
+            df_selected_analogs['Query_SMILES'] = SMILES_query[i]
+            dfs.append(df_selected_analogs)
+
     else:
         raise Exception('Error: Invalid method for selecting analogs.')
 
     # concat results
-    df_concat = pd.concat(dfs, ignore_index=True, sort=False)
+    if len(dfs) >= 1:
+        df_concat = pd.concat(dfs, ignore_index=True, sort=False)
+    else:
+        print(f'No analog found!')
+        return
 
     # remove duplicates
     deduplication = kwargs.get('deduplication', False)
@@ -391,6 +421,10 @@ if __name__ == '__main__':
     # analog_method = 'rank'
     # similarity_rank = 1
     # select_analogs(input_file_query, analogs_dir, analog_method, similarity_rank=similarity_rank, deduplication=False)
+    ### Select top-n most similar analog
+    analog_method = 'topN'
+    similarity_topN = 3
+    select_analogs(input_file_query, analogs_dir, analog_method, similarity_topN=similarity_topN, deduplication=False)
 
 
     ### Plot similarity score distribution ###

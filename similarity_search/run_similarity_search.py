@@ -73,9 +73,13 @@ def run_select_analogs():
     # similarity_cutoff = 0.4
     # select_analogs(input_file_query, analogs_dir, analog_method, similarity_cutoff=similarity_cutoff, deduplication=False)
     ### Select the rank-n most similar analog
-    analog_method = 'rank'
-    similarity_rank = 1
-    select_analogs(input_file_query, analogs_dir, analog_method, similarity_rank=similarity_rank, deduplication=False)
+    # analog_method = 'rank'
+    # similarity_rank = 1
+    # select_analogs(input_file_query, analogs_dir, analog_method, similarity_rank=similarity_rank, deduplication=False)
+    ### Select top-n most similar analog
+    analog_method = 'topN'
+    similarity_topN = 3
+    select_analogs(input_file_query, analogs_dir, analog_method, similarity_topN=similarity_topN, deduplication=False)
 
 
 def run_plot_distribution():
@@ -86,6 +90,6 @@ def run_plot_distribution():
 
 if __name__ == '__main__':
     # run_similarity_search_single_query()
-    run_similarity_search_multiple_query()
-    # run_select_analogs()
+    # run_similarity_search_multiple_query()
+    run_select_analogs()
     # run_plot_distribution()
