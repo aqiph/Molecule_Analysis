@@ -18,6 +18,7 @@ __pycache__/
 cluster_analysis/tests/
 diversity_analysis/tests/
 PAINS_analysis/tests/
+plot_Chemical_Space/tests/
 similarity_search/tests/
 SMILES_processing/tests/
 SMILESto3DCoord/tests/
