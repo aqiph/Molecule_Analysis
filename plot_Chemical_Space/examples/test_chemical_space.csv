@@ -1,0 +1,22 @@
+,ID,SMILES,Cleaned_SMILES,Label,Protein_ID,Pocket,Docking_Score
+0,1EYE_PK1_1,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=N)N3)nc(-c2ccnn2-c2ccccc2)c1=O,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=N)N3)nc(-c2ccnn2-c2ccccc2)c1=O,Generated Molecules,1EYE,1,-10.44
+1,1EYE_PK1_2,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCN(CC(=O)O)CC3)CC2)c(F)c1,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCN(CC(=O)O)CC3)CC2)c(F)c1,Generated Molecules,1EYE,1,-10.34
+2,1EYE_PK1_3,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCC(C(=O)O)CC3)CC2)cc1,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCC(C(=O)O)CC3)CC2)cc1,Generated Molecules,1EYE,1,-10.24
+3,1EYE_PK1_4,N=C1N=C2C=C(C(=O)N[C@H]3CC[C@H](c4ccccc4)CC3)C=NC2C(=O)N1,N=C1N=C2C=C(C(=O)NC3CCC(c4ccccc4)CC3)C=NC2C(=O)N1,Generated Molecules,1EYE,1,-10.19
+4,1EYE_PK1_5,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCOCC3)CC2)cc1,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCOCC3)CC2)cc1,Generated Molecules,1EYE,1,-10.14
+5,1EYE_PK1_6,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=O)N3)nc(-c2ccnn2-c2cccc(Cl)c2)c1=O,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=O)N3)nc(-c2ccnn2-c2cccc(Cl)c2)c1=O,Generated Molecules,1EYE,1,-9.938
+6,1EYE_PK1_7,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=N)N3)nc(-c2ccnn2-c2ccccc2Cl)c1=O,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=N)N3)nc(-c2ccnn2-c2ccccc2Cl)c1=O,Generated Molecules,1EYE,1,-9.906
+7,1EYE_PK1_8,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=O)N3)nc(-c2ccnn2-c2ccccc2Cl)c1=O,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=O)N3)nc(-c2ccnn2-c2ccccc2Cl)c1=O,Generated Molecules,1EYE,1,-9.823
+8,1EYE_PK1_9,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=O)N3)nc(-c2ccnn2-c2ccccc2)c1=O,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=O)N3)nc(-c2ccnn2-c2ccccc2)c1=O,Generated Molecules,1EYE,1,-9.794
+9,1EYE_PK1_10,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)O)CC2)cc1,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)O)CC2)cc1,Generated Molecules,1EYE,1,-9.778
+10,1EYE_PK1_11,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCCCC3)CC2)cc1,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCCCC3)CC2)cc1,Generated Molecules,1EYE,1,-9.766
+11,1EYE_PK1_12,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=O)N3)nc(-c2ccnn2-c2ccccc2)c1=N,COc1cn(-c2ccc3c(c2F)C(C)(C)C(=O)N3)nc(-c2ccnn2-c2ccccc2)c1=N,Generated Molecules,1EYE,1,-9.709
+12,1EYE_PK1_13,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCCC3)CC2)cc1,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N2CCC(C(=O)N3CCCC3)CC2)cc1,Generated Molecules,1EYE,1,-9.664
+13,1EYE_PK1_14,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)N2CCC(C(=O)N3CCCCC3)CC2)cc1,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)NC(CCC(=O)O)C(=O)N2CCC(C(=O)N3CCCCC3)CC2)cc1,Generated Molecules,1EYE,1,-9.655
+14,1EYE_PK1_15,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)N[C@@H](CCC(=O)N2CCCCC2)C(=O)O)cc1,CN(Cc1cnc2nc(=N)[nH]c(N)c2n1)c1ccc(C(=O)NC(CCC(=O)N2CCCCC2)C(=O)O)cc1,Generated Molecules,1EYE,1,-9.651
+15,1EYE_PK1_16,N=c1nc(O)c2nc(CNc3ncnc(O)c3[N+](=O)[O-])cnc2[nH]1,N=c1nc(O)c2nc(CNc3ncnc(O)c3[N+](=O)[O-])cnc2[nH]1,Generated Molecules,1EYE,1,-9.615
+16,1EYE_PK1_17,COc1cn(-c2ccc3c(c2F)C(C)(C)C(N)=N3)nc(-c2ccnn2-c2ccccc2)c1=O,COc1cn(-c2ccc3c(c2F)C(C)(C)C(N)=N3)nc(-c2ccnn2-c2ccccc2)c1=O,Generated Molecules,1EYE,1,-9.588
+17,1EYE_PK1_18,Cc1ccc(NC(=O)c2ccc(CN3CCN(C)CC3)c(C(F)(F)F)c2)cc1Nc1nccc(-c2cccnc2)n1,Cc1ccc(NC(=O)c2ccc(CN3CCN(C)CC3)c(C(F)(F)F)c2)cc1Nc1nccc(-c2cccnc2)n1,Generated Molecules,1EYE,1,-9.52
+18,1EYE_PK1_19,Clc1ccc(-c2n[nH]cc2-c2nnc(-c3ccc(-c4nn[nH]n4)cc3)o2)cc1Cl,Clc1ccc(-c2n[nH]cc2-c2nnc(-c3ccc(-c4nn[nH]n4)cc3)o2)cc1Cl,Drugs,1EYE,1,-9.516
+19,1EYE_PK1_20,N=C1N=C2C=C(C(=O)N[C@@H]3CCN(c4ccc(C(=O)O)cc4)C3)C=NC2C(=O)N1,N=C1N=C2C=C(C(=O)NC3CCN(c4ccc(C(=O)O)cc4)C3)C=NC2C(=O)N1,Drugs,1EYE,1,-9.498
+20,1EYE_PK1_21,CC(C)(C)CCN1C(=O)C(NC2CCN(c3ncc(C(F)(F)F)cn3)CC2)=C(C2=Nc3ccc(NS(C)(=O)=O)cc3S(=O)(=O)N2)C1=O,CC(C)(C)CCN1C(=O)C(NC2CCN(c3ncc(C(F)(F)F)cn3)CC2)=C(C2=Nc3ccc(NS(C)(=O)=O)cc3S(=O)(=O)N2)C1=O,Drugs,1EYE,1,-9.494
