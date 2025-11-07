@@ -501,7 +501,7 @@ if __name__ == '__main__':
         smiles_column_name = 'SMILES'
         id_column_name = 'ID'
 
-        process_multiple_SMILES(input_file, smiles_column_name, id_column_name, cleanup_SMILES=False, cleanup_chirality=False,
+        process_multiple_SMILES(input_file, smiles_column_name, id_column_name, cleanup_SMILES=True, cleanup_chirality=False,
                                 process_disconnection=False, process_disconnection_method='keep_most_atoms',
                                 addH = False, plot2D=True, legend='SMILES')
 

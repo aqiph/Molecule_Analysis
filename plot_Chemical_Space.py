@@ -17,54 +17,61 @@ from utils.molecular_description import get_fingerprint
 from collections import OrderedDict
 
 
-def figure_plot(df, output_folder):
-    sources = df['Source'].unique()
+def figure_plot(df, output_folder, plot_order=None):
+    if plot_order is not None:
+        sources = plot_order.copy()
+    else:
+        sources = df['Source'].unique()
+
     data = OrderedDict()
-    if 'Trainset' in sources:
-        data['Trainset'] = df[df['Source'] == 'Trainset']
-    if 'Trainset_positive' in sources:
-        data['Trainset_negative'] = df[df['Source'] == 'Trainset_negative']
-        data['Trainset_positive'] = df[df['Source'] == 'Trainset_positive']
-    if 'Testset' in sources:
-        # data['Testset'] = df[(df['Source'] == 'Testset')]
-        data['Testset'] = df[(df['Source'] == 'Testset') & (df['Selected'] == 1)]
+    for source in sources:
+        data[source] = df[df['Source'] == source]
 
     plt.figure(figsize=(8, 8))
-    color_list = ['r', 'b', 'orange', 'g']
+    color_list = ['orange', 'b', 'r', 'g', 'purple', 'grey']
 
     for i, (key, value) in enumerate(data.items()):
         if value is None:
             continue
-        plt.scatter(value['tSNE1'], value['tSNE2'], color=color_list[i], label=key, s=50, alpha=0.8)
+        plt.scatter(value['tSNE1'], value['tSNE2'], color=color_list[i%6], label=key, s=50, alpha=0.8)
 
     plt.xlabel("t-SNE Dimension 1", fontsize=16)
     plt.ylabel("t-SNE Dimension 2", fontsize=16)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
+    # plt.xlim(-150, 150)
+    # plt.ylim(-150, 150)
     plt.title('t-SNE Visualization of Chemical Space', fontsize=18, fontweight='bold')
     plt.legend(fontsize=14)
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'Chemical_space.pdf'), format='pdf', bbox_inches='tight')
 
 
-def plot_chemical_space_tSNE(input_file_library,
-              input_file_query = None,
-              smiles_column_name_library = 'SMILES',
-              smiles_column_name_query = 'SMILES',
-              label_column_name = None):
+def plot_chemical_space_tSNE(
+        input_file_library,
+        input_file_query = None,
+        smiles_column_name_library = 'SMILES',
+        smiles_column_name_query = 'SMILES',
+        label_column_name_library = None,
+        label_column_name_query = None,
+        plot_order = None):
     """
     Plot t-SME for chemical space.
-    :param input_file: str, path of the input file.
-    :param smiles_column_name: str, name of the SMILES column.
-    :param label_column_name: str, name of the label column.
+    :param input_file_library: str, path of the input library file.
+    :param input_file_query: str, path of the input query file.
+    :param smiles_column_name_library: str, name of the SMILES column in the input library file.
+    :param smiles_column_name_query: str, name of the SMILES column in the input query file.
+    :param label_column_name_library: str, name of the label column in the input library file.
+    :param label_column_name_query: str, name of the label column in the input query file.
+    :param plot_order: list, order of the dots in the chemical space plot.
     """
     # get library data (training data)
     df_library = pd.read_csv(input_file_library)
     df_library.rename(columns = {smiles_column_name_library : 'SMILES'}, inplace = True)
-    if label_column_name is None:
+    if label_column_name_library is None:
         df_library['Source'] = 'Trainset'
     else:
-        df_library['Source'] = df_library[label_column_name].apply(lambda l: 'Trainset_positive' if l >= 1 else 'Trainset_negative')
+        df_library['Source'] = df_library[label_column_name_library]
 
     # get query data (test data)
     if input_file_query is None:
@@ -72,7 +79,10 @@ def plot_chemical_space_tSNE(input_file_library,
     else:
         df_query = pd.read_csv(input_file_query)
         df_query.rename(columns = {smiles_column_name_query: 'SMILES'}, inplace = True)
-        df_query['Source'] = 'Testset'
+        if label_column_name_query is None:
+            df_query['Source'] = 'Testset'
+        else:
+            df_query['Source'] = df_query[label_column_name_query]
 
     # combine
     if df_query is not None:
@@ -99,7 +109,7 @@ def plot_chemical_space_tSNE(input_file_library,
     df_combined['tSNE2'] = tsne_results[:, 1]
 
     # plot
-    figure_plot(df_combined, output_folder=os.path.split(input_file_library)[0])
+    figure_plot(df_combined, output_folder=os.path.split(input_file_library)[0], plot_order=plot_order)
 
 
 
@@ -111,5 +121,8 @@ if __name__ == "__main__":
                              input_file_query=input_file_query,
                              smiles_column_name_library='SMILES',
                              smiles_column_name_query='SMILES',
-                             label_column_name=None)
+                             label_column_name_library=None,
+                             label_column_name_query=None,
+                             plot_order=None)
+
 
