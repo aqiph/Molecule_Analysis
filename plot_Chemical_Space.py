@@ -129,6 +129,7 @@ if __name__ == "__main__":
                              smiles_column_name_query='SMILES',
                              label_column_name_library=None,
                              label_column_name_query=None,
-                             plot_order=None)
+                             plot_order=None,
+                             color_order=None)
 
 
