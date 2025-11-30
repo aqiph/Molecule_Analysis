@@ -17,7 +17,7 @@ from utils.molecular_description import get_fingerprint
 from collections import OrderedDict
 
 
-def figure_plot(df, output_folder, plot_order=None):
+def figure_plot(df, output_folder, plot_order=None, color_order=None):
     if plot_order is not None:
         sources = plot_order.copy()
     else:
@@ -28,7 +28,11 @@ def figure_plot(df, output_folder, plot_order=None):
         data[source] = df[df['Source'] == source]
 
     plt.figure(figsize=(8, 8))
-    color_list = ['orange', 'b', 'r', 'g', 'purple', 'grey']
+    if color_order is not None:
+        color_list = color_order.copy()
+        color_list += ['b', 'orange', 'r', 'g', 'purple', 'grey'][len(color_order):6]
+    else:
+        color_list = ['b', 'orange', 'r', 'g', 'purple', 'grey']
 
     for i, (key, value) in enumerate(data.items()):
         if value is None:
@@ -54,7 +58,8 @@ def plot_chemical_space_tSNE(
         smiles_column_name_query = 'SMILES',
         label_column_name_library = None,
         label_column_name_query = None,
-        plot_order = None):
+        plot_order = None,
+        color_order = None):
     """
     Plot t-SME for chemical space.
     :param input_file_library: str, path of the input library file.
@@ -64,6 +69,7 @@ def plot_chemical_space_tSNE(
     :param label_column_name_library: str, name of the label column in the input library file.
     :param label_column_name_query: str, name of the label column in the input query file.
     :param plot_order: list, order of the dots in the chemical space plot.
+    :param color_order: list, order of the colors in the chemical space plot.
     """
     # get library data (training data)
     df_library = pd.read_csv(input_file_library)
@@ -109,7 +115,7 @@ def plot_chemical_space_tSNE(
     df_combined['tSNE2'] = tsne_results[:, 1]
 
     # plot
-    figure_plot(df_combined, output_folder=os.path.split(input_file_library)[0], plot_order=plot_order)
+    figure_plot(df_combined, output_folder=os.path.split(input_file_library)[0], plot_order=plot_order, color_order=color_order)
 
 
 
