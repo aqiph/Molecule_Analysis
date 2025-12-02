@@ -73,6 +73,10 @@ def plot_chemical_space_tSNE(
     """
     # get library data (training data)
     df_library = pd.read_csv(input_file_library)
+    library_column_to_keep = [smiles_column_name_library]
+    if label_column_name_library is not None:
+        library_column_to_keep.append(label_column_name_library)
+    df_library = pd.DataFrame(df_library, columns=library_column_to_keep)
     df_library.rename(columns = {smiles_column_name_library : 'SMILES'}, inplace = True)
     if label_column_name_library is None:
         df_library['Source'] = 'Trainset'
@@ -84,6 +88,10 @@ def plot_chemical_space_tSNE(
         df_query = None
     else:
         df_query = pd.read_csv(input_file_query)
+        query_column_to_keep = [smiles_column_name_query]
+        if label_column_name_query is not None:
+            query_column_to_keep.append(label_column_name_query)
+        df_query = pd.DataFrame(df_query, columns=query_column_to_keep)
         df_query.rename(columns = {smiles_column_name_query: 'SMILES'}, inplace = True)
         if label_column_name_query is None:
             df_query['Source'] = 'Testset'
@@ -125,8 +133,8 @@ if __name__ == "__main__":
     input_file_query = 'plot_Chemical_Space/tests/test_plot_Chemical_Space_test.csv'
     plot_chemical_space_tSNE(input_file_library,
                              input_file_query=input_file_query,
-                             smiles_column_name_library='SMILES',
-                             smiles_column_name_query='SMILES',
+                             smiles_column_name_library='Cleaned_SMILES',
+                             smiles_column_name_query='Cleaned_SMILES',
                              label_column_name_library=None,
                              label_column_name_query=None,
                              plot_order=None,
