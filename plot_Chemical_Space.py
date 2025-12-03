@@ -46,7 +46,7 @@ def figure_plot(df, output_folder, plot_order=None, color_order=None):
     # plt.xlim(-150, 150)
     # plt.ylim(-150, 150)
     plt.title('t-SNE Visualization of Chemical Space', fontsize=18, fontweight='bold')
-    plt.legend(fontsize=14)
+    plt.legend(fontsize=14, loc='upper right')
     plt.tight_layout()
     plt.savefig(os.path.join(output_folder, 'Chemical_space.pdf'), format='pdf', bbox_inches='tight')
 
